@@ -1,11 +1,11 @@
 {
-  "name": "Tienda Artesanal",
-  "short_name": "Tienda",
+  "name": "Proyecto ReNuevaNos",
+  "short_name": "ReNuevaNos",
   "description": "Cerámica, figuras religiosas, cuadros, telas botánicas y más.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#faf6f0",
-  "theme_color": "#b5651d",
+  "background_color": "#f6f1e4",
+  "theme_color": "#6f7f5a",
   "orientation": "portrait",
   "icons": [
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }

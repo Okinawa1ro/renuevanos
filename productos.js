@@ -10,7 +10,7 @@
 const CONFIG = {
 
   // ── Datos de tu tienda ──────────────────────────────────────────────
-  nombre:      "Taller Artesanal",          // Nombre que aparece arriba
+  nombre:      "Proyecto ReNuevaNos",        // Nombre que aparece arriba
   eslogan:     "Cerámica, arte y objetos con alma",  // Frase debajo del nombre
   moneda:      "$",                          // Símbolo de la moneda
 
