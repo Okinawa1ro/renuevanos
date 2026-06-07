@@ -1,0 +1,13 @@
+{
+  "name": "Tienda Artesanal",
+  "short_name": "Tienda",
+  "description": "Cerámica, figuras religiosas, cuadros, telas botánicas y más.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf6f0",
+  "theme_color": "#b5651d",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

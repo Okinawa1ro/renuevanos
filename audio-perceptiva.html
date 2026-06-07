@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Audio Perceptiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060610;--bg2:#0c0c1e;--card:#11112a;--card2:#18183a;
+  --gold:#d4a031;--gold2:#f0bf55;--orange:#dd5e22;
+  --text:#f0ece0;--sub:#7a79a0;--ok:#38c96c;--err:#e03a3a;
+  --info:#5b8dee;--border:#1e1e40;--border2:#2a2a50;
+  --r:16px;--r2:10px;--r3:50px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);overflow-x:hidden;}
+#root{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;}
+.screen{min-height:100vh;display:flex;flex-direction:column;padding-bottom:86px;}
+.screen.no-nav{padding-bottom:0;}
+
+/* ── TYPOGRAPHY ── */
+.logo{font-family:'Cinzel Decorative',serif;font-size:20px;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px;}
+.logo-sub{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;color:var(--sub);text-transform:uppercase;margin-top:2px;}
+.section-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--sub);text-transform:uppercase;margin-bottom:12px;padding:0 20px;}
+.cfg-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--sub);text-transform:uppercase;margin-bottom:10px;}
+
+/* ── HEADER ── */
+.header{padding:52px 20px 16px;display:flex;align-items:center;justify-content:space-between;position:relative;gap:10px;}
+.back-btn{background:none;border:1px solid var(--border2);border-radius:50%;width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--sub);font-size:18px;transition:.2s;}
+.back-btn:active{border-color:var(--gold);color:var(--gold);}
+.header-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.streak-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(212,160,49,.12);border:1px solid rgba(212,160,49,.25);border-radius:50px;padding:5px 10px;font-size:12px;font-weight:700;color:var(--gold);}
+.pro-pill{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;font-size:10px;font-weight:800;padding:4px 10px;border-radius:50px;letter-spacing:.5px;cursor:pointer;border:none;font-family:'Nunito',sans-serif;}
+
+/* ── STAFF DECO ── */
+.staff-deco{position:absolute;top:0;right:0;width:120px;height:85px;opacity:.05;pointer-events:none;}
+
+/* ── HOME CARDS ── */
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;text-align:left;}
+.cat-card:active{transform:scale(.97);}
+.cat-card.pro-card{border-color:rgba(212,160,49,.3);}
+.cat-card.pro-card:hover{border-color:var(--gold);}
+.cc-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.1;filter:blur(18px);}
+.cat-icon{font-size:28px;margin-bottom:8px;display:block;line-height:1;}
+.cat-title{font-family:'Cinzel',serif;font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+.cat-desc{font-size:10px;color:var(--sub);line-height:1.4;}
+.cat-count{position:absolute;top:10px;right:10px;background:var(--bg);border-radius:50px;padding:2px 7px;font-size:10px;color:var(--sub);border:1px solid var(--border);}
+.pro-lock{font-size:9px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;padding:2px 7px;border-radius:50px;font-weight:800;}
+
+/* ── QUICK STATS ── */
+.quick-stats{display:flex;gap:8px;padding:0 20px;overflow-x:auto;scrollbar-width:none;}
+.quick-stats::-webkit-scrollbar{display:none;}
+.qs-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;min-width:82px;text-align:center;flex-shrink:0;}
+.qs-val{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--gold);}
+.qs-label{font-size:10px;color:var(--sub);margin-top:1px;}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:16px 20px;}
+
+/* ── UPSELL BANNER ── */
+.upsell-banner{margin:0 20px 14px;padding:12px 16px;background:rgba(212,160,49,.07);border:1px solid rgba(212,160,49,.2);border-radius:var(--r2);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;}
+.upsell-left .upsell-title{font-size:12px;font-weight:700;color:var(--gold);}
+.upsell-left .upsell-sub{font-size:10px;color:var(--sub);margin-top:2px;}
+.upsell-arrow{font-size:13px;color:var(--gold);font-weight:700;white-space:nowrap;}
+
+/* ── CONFIG ── */
+.config-body{padding:0 20px;flex:1;overflow-y:auto;}
+.cfg-section{margin-bottom:20px;}
+.cfg-sub{font-size:11px;color:var(--sub);margin-bottom:8px;}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:7px 13px;border-radius:50px;border:1.5px solid var(--border);background:none;color:var(--sub);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;white-space:nowrap;}
+.chip:active{transform:scale(.95);}
+.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(212,160,49,.1);}
+.seg-control{display:flex;background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:3px;gap:2px;}
+.seg-btn{flex:1;padding:7px 4px;border-radius:8px;border:none;background:none;color:var(--sub);font-family:'Nunito',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;}
+.seg-btn.on{background:var(--gold);color:#000;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border-bottom:none;}
+.trow-label{font-size:13px;font-weight:600;}
+.trow-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--border2);position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0;}
+.toggle.on{background:var(--gold);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;}
+.toggle.on::after{left:23px;}
+.sel-wrap{position:relative;}
+.sel-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--sub);pointer-events:none;}
+select.styled{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:11px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;width:100%;appearance:none;-webkit-appearance:none;cursor:pointer;}
+.config-footer{padding:14px 20px 18px;border-top:1px solid var(--border);}
+
+/* ── BUTTONS ── */
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;border:none;border-radius:var(--r3);padding:15px 28px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;width:100%;transition:all .2s;}
+.btn-primary:active{transform:scale(.97);}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:var(--r3);padding:13px 24px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;width:100%;transition:all .2s;}
+.btn-secondary:active{transform:scale(.97);}
+
+/* ── EXERCISE ── */
+.ex-header{padding:46px 20px 10px;display:flex;align-items:center;gap:10px;}
+.ex-progress-wrap{flex:1;}
+.ex-counter{font-size:10px;color:var(--sub);font-weight:600;margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px;}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--orange));border-radius:2px;transition:width .4s;}
+.ex-type-badge{font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;padding:4px 9px;border:1px solid var(--border);border-radius:50px;white-space:nowrap;}
+.ex-play-zone{display:flex;flex-direction:column;align-items:center;padding:20px 20px 16px;gap:10px;}
+.ex-prompt{font-family:'Cinzel',serif;font-size:12px;color:var(--sub);text-align:center;letter-spacing:1px;}
+.note-display{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold);}
+.play-btn{width:92px;height:92px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,var(--gold),var(--orange));transition:all .25s;position:relative;}
+.play-btn.playing{animation:pulse-play 1.2s infinite;}
+@keyframes pulse-play{0%,100%{box-shadow:0 0 0 0 rgba(212,160,49,.5);}50%{box-shadow:0 0 0 18px rgba(212,160,49,0);}}
+.play-btn:active{transform:scale(.92);}
+.play-label{font-size:10px;color:var(--sub);letter-spacing:1px;font-family:'Cinzel',serif;}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 20px;}
+.opt-btn{background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:14px 10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;min-height:58px;display:flex;align-items:center;justify-content:center;line-height:1.3;}
+.opt-btn:active:not(:disabled){transform:scale(.96);}
+.opt-btn.correct{border-color:var(--ok);background:rgba(56,201,108,.12);color:var(--ok);}
+.opt-btn.wrong{border-color:var(--err);background:rgba(224,58,58,.12);color:var(--err);}
+.opt-btn.reveal{border-color:var(--ok);background:rgba(56,201,108,.08);color:var(--ok);}
+.opt-btn:disabled{cursor:default;}
+.feedback-bar{margin:12px 20px 0;padding:12px 16px;border-radius:var(--r);display:flex;align-items:center;gap:10px;font-weight:700;font-size:13px;}
+.feedback-bar.ok{background:rgba(56,201,108,.1);border:1px solid rgba(56,201,108,.3);color:var(--ok);}
+.feedback-bar.ko{background:rgba(224,58,58,.1);border:1px solid rgba(224,58,58,.3);color:var(--err);}
+.next-btn-wrap{padding:12px 20px 0;}
+
+/* ── MELODIC DICTATION ── */
+.melody-staff{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin:0 20px 14px;}
+.melody-staff-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;margin-bottom:12px;}
+.melody-slots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:44px;align-items:center;}
+.mel-slot{width:38px;height:38px;border-radius:var(--r2);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-family:'Cinzel',serif;background:var(--card2);transition:all .2s;}
+.mel-slot.filled{border-color:var(--gold);color:var(--gold);background:rgba(212,160,49,.1);}
+.mel-slot.active{border-color:var(--info);animation:slot-pulse .8s infinite;}
+.mel-slot.correct{border-color:var(--ok);color:var(--ok);background:rgba(56,201,108,.12);}
+.mel-slot.wrong{border-color:var(--err);color:var(--err);background:rgba(224,58,58,.12);}
+@keyframes slot-pulse{0%,100%{border-color:var(--info);}50%{border-color:rgba(91,141,238,.3);}}
+.mel-keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 20px;margin-bottom:8px;}
+.mel-key{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:10px 4px;font-family:'Cinzel',serif;font-size:10px;color:var(--sub);cursor:pointer;text-align:center;transition:all .2s;}
+.mel-key:active{transform:scale(.93);border-color:var(--gold);color:var(--gold);}
+.mel-key.sharp{font-size:9px;background:var(--card);}
+.mel-actions{display:flex;gap:8px;padding:0 20px;}
+.mel-erase{background:var(--card2);border:1px solid var(--border);border-radius:50px;padding:10px 18px;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;flex:1;}
+.mel-erase:active{transform:scale(.96);}
+
+/* ── CHORD PROGRESSION ── */
+.prog-display{display:flex;gap:8px;padding:0 20px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;}
+.prog-display::-webkit-scrollbar{display:none;}
+.prog-chord{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px 10px;text-align:center;min-width:72px;flex-shrink:0;}
+.prog-chord.playing-now{border-color:var(--gold);background:rgba(212,160,49,.1);}
+.prog-chord-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:var(--text);}
+.prog-chord-num{font-size:10px;color:var(--sub);margin-top:3px;}
+
+/* ── DAILY CHALLENGE ── */
+.challenge-hero{padding:20px;text-align:center;}
+.challenge-date{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--sub);text-transform:uppercase;margin-bottom:8px;}
+.challenge-title{font-family:'Cinzel Decorative',serif;font-size:18px;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.challenge-sub{font-size:12px;color:var(--sub);}
+.ranking-list{padding:0 20px;}
+.rank-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.rank-item:last-child{border-bottom:none;}
+.rank-pos{font-family:'Cinzel',serif;font-size:14px;font-weight:700;width:24px;text-align:center;flex-shrink:0;}
+.rank-pos.gold{color:#ffd700;}
+.rank-pos.silver{color:#c0c0c0;}
+.rank-pos.bronze{color:#cd7f32;}
+.rank-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.rank-info{flex:1;}
+.rank-name{font-size:13px;font-weight:700;}
+.rank-name.is-me{color:var(--gold);}
+.rank-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+.rank-score{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--gold);}
+.rank-streak{font-size:10px;color:var(--sub);}
+.my-rank-banner{margin:14px 20px;padding:14px 16px;background:rgba(212,160,49,.08);border:1px solid rgba(212,160,49,.25);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;}
+.my-rank-left{font-size:12px;color:var(--sub);}
+.my-rank-pos{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--gold);}
+
+/* ── RESULTS ── */
+.results-body{flex:1;padding:0 20px;display:flex;flex-direction:column;gap:16px;}
+.score-circle-wrap{display:flex;justify-content:center;padding-top:8px;}
+.score-circle{width:140px;height:140px;border-radius:50%;border-width:5px;border-style:solid;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-family:'Cinzel',serif;font-size:38px;font-weight:700;line-height:1;}
+.score-sub{font-size:10px;color:var(--sub);margin-top:2px;}
+.stars{font-size:26px;letter-spacing:5px;text-align:center;}
+.result-stat-row{display:flex;gap:8px;}
+.rstat{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px;text-align:center;}
+.rstat-val{font-family:'Cinzel',serif;font-size:22px;font-weight:700;}
+.rstat-label{font-size:10px;color:var(--sub);margin-top:2px;}
+.ar-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;margin-bottom:8px;}
+.ar-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.ar-item:last-child{border-bottom:none;}
+.ar-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.results-actions{display:flex;flex-direction:column;gap:8px;padding-bottom:20px;}
+
+/* ── AD ── */
+.ad-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;padding:40px 20px;}
+.ad-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--sub);text-transform:uppercase;}
+.ad-box{width:100%;max-width:340px;height:260px;background:var(--card);border:1px dashed var(--border2);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--sub);}
+.ad-countdown{font-family:'Cinzel',serif;font-size:12px;color:var(--sub);}
+.ad-banner{margin:0 20px;padding:12px;background:var(--card);border:1px dashed var(--border2);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;min-height:56px;}
+
+/* ── STATS ── */
+.stats-body{padding:0 20px;flex:1;overflow-y:auto;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;}
+.stat-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.stat-card-icon{font-size:22px;}
+.stat-card-title{font-family:'Cinzel',serif;font-size:12px;font-weight:600;}
+.stat-card-sub{font-size:10px;color:var(--sub);}
+.stat-bar-wrap{margin-bottom:7px;}
+.stat-bar-label{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;}
+.stat-bar-name{color:var(--sub);}
+.stat-bar-pct{color:var(--gold);font-weight:700;}
+.stat-bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.stat-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--orange));border-radius:3px;transition:width .8s;}
+.empty-stats{text-align:center;padding:50px 0;color:var(--sub);}
+
+/* ── UPGRADE ── */
+.upgrade-screen{flex:1;padding:0 20px 30px;overflow-y:auto;}
+.upgrade-hero{text-align:center;padding:16px 0 24px;}
+.upgrade-icon{font-size:52px;display:block;margin-bottom:10px;}
+.upgrade-title{font-family:'Cinzel Decorative',serif;font-size:20px;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.upgrade-sub{font-size:12px;color:var(--sub);line-height:1.6;}
+.upgrade-features{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:16px;}
+.upgrade-feat{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.upgrade-feat:last-child{border-bottom:none;}
+.feat-icon{font-size:20px;flex-shrink:0;width:26px;text-align:center;}
+.feat-title{font-size:13px;font-weight:700;}
+.feat-sub{font-size:11px;color:var(--sub);margin-top:2px;line-height:1.4;}
+.price-card{background:var(--card2);border:1.5px solid var(--gold);border-radius:var(--r);padding:18px;text-align:center;margin-bottom:12px;}
+.price-amount{font-family:'Cinzel',serif;font-size:34px;font-weight:700;color:var(--gold);}
+.price-period{font-size:11px;color:var(--sub);}
+.price-note{font-size:10px;color:var(--border2);margin-top:5px;}
+.restore-btn{background:none;border:none;color:var(--sub);font-size:11px;text-decoration:underline;cursor:pointer;font-family:'Nunito',sans-serif;padding:6px;display:block;margin:0 auto;}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(6,6,16,.96);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;z-index:200;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;border:none;background:none;color:var(--sub);transition:color .2s;font-family:'Nunito',sans-serif;}
+.nav-item.active{color:var(--gold);}
+.nav-icon{font-size:20px;}
+.nav-label{font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+
+/* ── MISC ── */
+.divider-sm{height:1px;background:var(--border);margin:12px 0;}
+@media(min-width:430px){#root{box-shadow:0 0 80px rgba(0,0,0,.6);}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+/* ════════════════════════════════════════════════════════════
+   AUDIO ENGINE
+════════════════════════════════════════════════════════════ */
+let _ctx=null,_master=null;
+function getCtx(){
+  if(!_ctx){
+    _ctx=new(window.AudioContext||window.webkitAudioContext)();
+    _master=_ctx.createGain(); _master.gain.value=.65; _master.connect(_ctx.destination);
+  }
+  if(_ctx.state==='suspended')_ctx.resume();
+  return _ctx;
+}
+function midiToFreq(m){return 440*Math.pow(2,(m-69)/12);}
+function playNote(midi,t0,dur=2.2){
+  const ctx=getCtx(),f=midiToFreq(midi),g=ctx.createGain();
+  g.connect(_master);
+  const a=.005,d=.25,s=.35,r=Math.min(.9,dur*.35);
+  g.gain.setValueAtTime(0,t0);
+  g.gain.linearRampToValueAtTime(.3,t0+a);
+  g.gain.exponentialRampToValueAtTime(.3*s,t0+a+d);
+  g.gain.setValueAtTime(.3*s,t0+dur-r);
+  g.gain.linearRampToValueAtTime(.001,t0+dur);
+  [[1,.9],[2,.35],[3,.12],[4,.05],[6,.02]].forEach(([h,amp])=>{
+    const o=ctx.createOscillator(),hg=ctx.createGain();
+    hg.gain.value=amp; o.type='sine'; o.frequency.value=f*h;
+    o.connect(hg); hg.connect(g); o.start(t0); o.stop(t0+dur+.05);
+  });
+}
+function playChord(midis,arp=false,dur=2.5){
+  const ctx=getCtx(),now=ctx.currentTime+.05;
+  if(arp){
+    const pad=midis.length<4?[...midis,midis[0]+12]:midis;
+    pad.forEach((m,i)=>playNote(m,now+i*.2,dur));
+  } else {
+    midis.forEach(m=>playNote(m,now,dur));
+  }
+}
+function playScale(midis,speed=.42){
+  const ctx=getCtx(),now=ctx.currentTime+.05;
+  const all=[...midis,midis[0]+12];
+  all.forEach((m,i)=>playNote(m,now+i*speed,speed+.3));
+}
+function playInterval(root,st,harmonic=true){
+  const ctx=getCtx(),now=ctx.currentTime+.05;
+  if(harmonic){playNote(root,now,2.8);playNote(root+st,now,2.8);}
+  else{playNote(root,now,1.4);playNote(root+st,now+.85,1.4);}
+}
+function playMelody(midis,speed=.7){
+  const ctx=getCtx(),now=ctx.currentTime+.05;
+  midis.forEach((m,i)=>playNote(m,now+i*speed,.55));
+}
+function playProgression(chordsMidis,gap=1.2){
+  const ctx=getCtx(),now=ctx.currentTime+.05;
+  chordsMidis.forEach((midis,i)=>midis.forEach(m=>playNote(m,now+i*gap,gap+.3)));
+}
+
+/* ════════════════════════════════════════════════════════════
+   MUSIC DATA
+════════════════════════════════════════════════════════════ */
+const NOTAS=['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+const NOTAS_EN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+const INTERVALOS=[
+  {n:'Unísono',st:0},{n:'2ª menor',st:1},{n:'2ª mayor',st:2},
+  {n:'3ª menor',st:3},{n:'3ª mayor',st:4},{n:'4ª justa',st:5},
+  {n:'Tritono',st:6},{n:'5ª justa',st:7},{n:'6ª menor',st:8},
+  {n:'6ª mayor',st:9},{n:'7ª menor',st:10},{n:'7ª mayor',st:11},{n:'Octava',st:12}
+];
+const ACORDES=[
+  {n:'Mayor',st:[0,4,7]},{n:'Menor',st:[0,3,7]},
+  {n:'Aumentado',st:[0,4,8]},{n:'Disminuido',st:[0,3,6]},
+  {n:'Dom. 7ª',st:[0,4,7,10]},{n:'Mayor 7ª',st:[0,4,7,11]},
+  {n:'Menor 7ª',st:[0,3,7,10]},{n:'Dismin. 7ª',st:[0,3,6,9]},
+  {n:'Semidismin.',st:[0,3,6,10]},{n:'Sus2',st:[0,2,7]},{n:'Sus4',st:[0,5,7]}
+];
+const ESCALAS=[
+  {n:'Mayor',iv:[0,2,4,5,7,9,11]},{n:'Menor natural',iv:[0,2,3,5,7,8,10]},
+  {n:'Menor armónica',iv:[0,2,3,5,7,8,11]},{n:'Menor melódica',iv:[0,2,3,5,7,9,11]},
+  {n:'Pentatónica mayor',iv:[0,2,4,7,9]},{n:'Pentatónica menor',iv:[0,3,5,7,10]},
+  {n:'Blues',iv:[0,3,5,6,7,10]},{n:'Cromática',iv:[0,1,2,3,4,5,6,7,8,9,10,11]}
+];
+const MODOS=[
+  {n:'Jónico',iv:[0,2,4,5,7,9,11]},{n:'Dórico',iv:[0,2,3,5,7,9,10]},
+  {n:'Frigio',iv:[0,1,3,5,7,8,10]},{n:'Lidio',iv:[0,2,4,6,7,9,11]},
+  {n:'Mixolidio',iv:[0,2,4,5,7,9,10]},{n:'Eólico',iv:[0,2,3,5,7,8,10]},
+  {n:'Locrio',iv:[0,1,3,5,6,8,10]}
+];
+
+// Preset melodic dictations (midi offsets from root=60)
+const MELODIAS=[
+  {n:'Oda a la Alegría',midis:[64,64,65,67,67,65,64,62,60,60,62,64,64,62,62],desc:'Beethoven — Motivo inicial'},
+  {n:'Cumpleaños Feliz',midis:[60,60,62,60,65,64,60,60,62,60,67,65],desc:'Tradicional — 2 frases'},
+  {n:'Escala mayor ascendente',midis:[60,62,64,65,67,69,71,72],desc:'Do mayor — 8 notas'},
+  {n:'Escala menor natural',midis:[60,62,63,65,67,68,70,72],desc:'La menor — 8 notas'},
+  {n:'Motivo de 4 notas',midis:[60,64,67,65],desc:'Tríada mayor con 9ª'},
+  {n:'Frase modal dórica',midis:[62,64,65,67,69,71,72,71],desc:'Re dórico — 8 notas'},
+  {n:'Pentatónica mayor',midis:[60,62,64,67,69,72],desc:'Do pentatónica — 6 notas'},
+  {n:'Frase de blues',midis:[60,63,65,66,67,70,72],desc:'Do blues — 7 notas'},
+];
+
+// Preset chord progressions
+const PROGRESIONES=[
+  {n:'I – IV – V – I',desc:'Cadencia perfecta en Do mayor',
+   chords:[{n:'Do M',st:[0,4,7]},{n:'Fa M',st:[5,9,12]},{n:'Sol M',st:[7,11,14]},{n:'Do M',st:[0,4,7]}]},
+  {n:'I – V – vi – IV',desc:'La progresión más popular del pop',
+   chords:[{n:'Do M',st:[0,4,7]},{n:'Sol M',st:[7,11,14]},{n:'La m',st:[9,12,16]},{n:'Fa M',st:[5,9,12]}]},
+  {n:'ii – V – I',desc:'Cadencia de jazz en Do mayor',
+   chords:[{n:'Re m7',st:[2,5,9,12]},{n:'Sol 7',st:[7,11,14,17]},{n:'Do M7',st:[0,4,7,11]}]},
+  {n:'I – vi – ii – V',desc:'Turnaround clásico',
+   chords:[{n:'Do M',st:[0,4,7]},{n:'La m',st:[9,12,16]},{n:'Re m',st:[2,5,9]},{n:'Sol M',st:[7,11,14]}]},
+  {n:'vi – IV – I – V',desc:'Progresión menor popular',
+   chords:[{n:'La m',st:[9,12,16]},{n:'Fa M',st:[5,9,12]},{n:'Do M',st:[0,4,7]},{n:'Sol M',st:[7,11,14]}]},
+  {n:'i – VII – VI – VII',desc:'Progresión modal/rock',
+   chords:[{n:'La m',st:[9,12,16]},{n:'Sol M',st:[7,11,14]},{n:'Fa M',st:[5,9,12]},{n:'Sol M',st:[7,11,14]}]},
+];
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════════ */
+let state={
+  screen:'home', // home|config|exercise|dictado|progresion|challenge|ad|results|stats|upgrade
+  exType:null,
+  isPro:false,
+  navTab:'home',
+  cfg:{
+    tonality:null,
+    intervalMode:'harmonic',
+    selIntervals:INTERVALOS.map(i=>i.st),
+    selChords:ACORDES.map(a=>a.n),
+    maxInversion:2,
+    arpeggio:true,
+    selScales:ESCALAS.map(e=>e.n),
+    selModes:MODOS.map(m=>m.n),
+    questionsN:10,
+  },
+  session:{exercises:[],current:0,answers:[]},
+  answered:false, selected:null, playing:false,
+  adCountdown:3,
+  // Melodic dictation state
+  dictado:{
+    melody:null,        // current MELODIA
+    userInput:[],       // note names entered by user
+    submitted:false,
+    playCount:0,
+  },
+  // Progression state
+  progresion:{
+    prog:null,
+    options:[],
+    selected:null,
+    answered:false,
+    currentChord:0,
+    playing:false,
+  },
+  // Daily challenge
+  challenge:{
+    exercises:[],
+    current:0,
+    answers:[],
+    completed:false,
+    score:0,
+    todayKey:'',
+  },
+  stats:{
+    intervalos:{correct:0,total:0,history:[]},
+    acordes:{correct:0,total:0,history:[]},
+    escalas:{correct:0,total:0,history:[]},
+    modos:{correct:0,total:0,history:[]},
+    dictado:{correct:0,total:0},
+    progresion:{correct:0,total:0},
+    challenge:{best:0,streak:0,lastDate:''},
+  },
+  streak:0,
+  totalDone:0,
+};
+
+// Simulated leaderboard (in production: API call)
+const LEADERBOARD_BASE=[
+  {name:'Martín G.',score:1000,streak:14,color:'#5b8dee'},
+  {name:'Lucía F.',score:980,streak:11,color:'#8a6cf7'},
+  {name:'Pablo R.',score:950,streak:8,color:'#dd5e22'},
+  {name:'Valentina C.',score:920,streak:6,color:'#38c96c'},
+  {name:'Andrés M.',score:900,streak:9,color:'#d4a031'},
+  {name:'Sofía T.',score:870,streak:5,color:'#e03a3a'},
+  {name:'Nicolás B.',score:840,streak:7,color:'#5b8dee'},
+  {name:'Camila V.',score:810,streak:3,color:'#8a6cf7'},
+  {name:'Diego L.',score:790,streak:4,color:'#38c96c'},
+  {name:'Florencia S.',score:750,streak:2,color:'#dd5e22'},
+];
+
+/* ════════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════════ */
+function shuffle(a){return[...a].sort(()=>Math.random()-.5);}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function pct(c,t){return t?Math.round((c/t)*100):0;}
+function stars(p){return p>=90?'★★★':p>=70?'★★☆':p>=50?'★☆☆':'☆☆☆';}
+function getRootMidi(cfg){
+  const t=cfg.tonality!==null?cfg.tonality:Math.floor(Math.random()*12);
+  return 60+t;
+}
+function getInversion(st,inv){
+  const r=[...st];
+  for(let i=0;i<inv;i++)r.push(r.shift()+12);
+  return r;
+}
+function buildOpts(correct,selPool,fullPool,n=4){
+  const distractors=shuffle((fullPool||selPool).filter(x=>x!==correct));
+  const notSel=distractors.filter(x=>!selPool.includes(x));
+  const fromSel=distractors.filter(x=>selPool.includes(x)&&x!==correct);
+  return shuffle([correct,...([...notSel,...fromSel]).slice(0,n-1)]);
+}
+function todayKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function getDayName(){
+  return new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXERCISE GENERATION (standard)
+════════════════════════════════════════════════════════════ */
+function genExercise(type,cfg){
+  const root=getRootMidi(cfg);
+  const noteName=NOTAS[root%12];
+  if(type==='intervalos'){
+    const pool=INTERVALOS.filter(i=>cfg.selIntervals.includes(i.st));
+    if(!pool.length)return null;
+    const ch=pick(pool);
+    return{type,root,noteName,correct:ch.n,
+      options:buildOpts(ch.n,pool.map(i=>i.n),INTERVALOS.map(i=>i.n)),
+      play:()=>playInterval(root,ch.st,cfg.intervalMode==='harmonic'),
+    };
+  }
+  if(type==='acordes'){
+    const pool=ACORDES.filter(a=>cfg.selChords.includes(a.n));
+    if(!pool.length)return null;
+    const ch=pick(pool);
+    const maxInv=Math.min(ch.st.length-1,cfg.maxInversion);
+    const inv=Math.floor(Math.random()*(maxInv+1));
+    const invSt=getInversion(ch.st,inv);
+    const midis=invSt.map(s=>root+s);
+    const selLabels=[];
+    pool.forEach(a=>{for(let v=0;v<=Math.min(a.st.length-1,cfg.maxInversion);v++)selLabels.push(v?`${a.n} – ${v}ª inv.`:a.n);});
+    const fullLabels=[];
+    ACORDES.forEach(a=>{for(let v=0;v<=Math.min(a.st.length-1,cfg.maxInversion);v++)fullLabels.push(v?`${a.n} – ${v}ª inv.`:a.n);});
+    const correct=inv?`${ch.n} – ${inv}ª inv.`:ch.n;
+    return{type,root,noteName,correct,options:buildOpts(correct,selLabels,fullLabels),play:()=>playChord(midis,cfg.arpeggio)};
+  }
+  if(type==='escalas'){
+    const pool=ESCALAS.filter(e=>cfg.selScales.includes(e.n));
+    if(!pool.length)return null;
+    const ch=pick(pool);
+    return{type,root,noteName,correct:ch.n,
+      options:buildOpts(ch.n,pool.map(e=>e.n),ESCALAS.map(e=>e.n)),
+      play:()=>playScale(ch.iv.map(s=>root+s)),
+    };
+  }
+  if(type==='modos'){
+    const pool=MODOS.filter(m=>cfg.selModes.includes(m.n));
+    if(!pool.length)return null;
+    const ch=pick(pool);
+    return{type,root,noteName,correct:ch.n,
+      options:buildOpts(ch.n,pool.map(m=>m.n),MODOS.map(m=>m.n)),
+      play:()=>playScale(ch.iv.map(s=>root+s)),
+    };
+  }
+  return null;
+}
+
+function startSession(type,cfg){
+  const exs=[];
+  for(let i=0;i<cfg.questionsN;i++){const ex=genExercise(type,cfg);if(ex)exs.push(ex);}
+  if(!exs.length)return;
+  state.session={exercises:exs,current:0,answers:[]};
+  state.answered=false; state.selected=null; state.exType=type;
+  state.screen='exercise'; render();
+  setTimeout(()=>{if(state.screen==='exercise')handlePlay();},500);
+}
+
+/* ════════════════════════════════════════════════════════════
+   ACTIONS
+════════════════════════════════════════════════════════════ */
+function handlePlay(){
+  if(state.playing)return;
+  const ex=state.session.exercises[state.session.current];
+  if(!ex)return;
+  state.playing=true; render(); ex.play();
+  setTimeout(()=>{state.playing=false;render();},3600);
+}
+
+function handleAnswer(opt){
+  if(state.answered)return;
+  const ex=state.session.exercises[state.session.current];
+  const isOk=opt===ex.correct;
+  state.selected=opt; state.answered=true;
+  state.session.answers.push({correct:isOk,selected:opt,answer:ex.correct});
+  const k=state.exType==='challenge'?'intervalos':state.exType;
+  if(state.stats[k]){state.stats[k].correct+=isOk?1:0;state.stats[k].total+=1;state.stats[k].history=(state.stats[k].history||[]).concat(isOk?1:0);}
+  if(isOk)state.streak++;else state.streak=0;
+  render();
+}
+
+function handleNext(){
+  const nxt=state.session.current+1;
+  if(nxt>=state.session.exercises.length){
+    finishSession();
+  } else {
+    state.session.current=nxt; state.answered=false; state.selected=null;
+    render(); setTimeout(()=>{if(state.screen==='exercise')handlePlay();},500);
+  }
+}
+
+function finishSession(){
+  if(state.isPro){state.totalDone++;state.screen='results';render();}
+  else{
+    state.screen='ad'; state.adCountdown=3; render();
+    const t=setInterval(()=>{
+      state.adCountdown--;
+      if(state.adCountdown<=0){clearInterval(t);state.totalDone++;state.screen='results';render();}
+      else render();
+    },1000);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   DAILY CHALLENGE
+════════════════════════════════════════════════════════════ */
+function buildDailyChallenge(){
+  // Seed from today's date for consistent challenge
+  const key=todayKey();
+  const seed=key.split('-').reduce((a,n)=>a+parseInt(n),0);
+  const types=['intervalos','acordes','escalas','modos'];
+  const exs=[];
+  for(let i=0;i<10;i++){
+    const type=types[(seed+i)%types.length];
+    const ex=genExercise(type,state.cfg);
+    if(ex)exs.push(ex);
+  }
+  state.challenge={exercises:exs,current:0,answers:[],completed:false,score:0,todayKey:key};
+}
+
+function startChallenge(){
+  if(state.challenge.todayKey!==todayKey()||state.challenge.exercises.length===0)buildDailyChallenge();
+  if(state.challenge.completed){state.screen='challenge';render();return;}
+  state.session={exercises:state.challenge.exercises,current:state.challenge.current,answers:state.challenge.answers};
+  state.answered=false; state.selected=null; state.exType='challenge';
+  state.screen='exercise'; render();
+  setTimeout(()=>{if(state.screen==='exercise')handlePlay();},500);
+}
+
+function finishChallenge(answers){
+  const correct=answers.filter(a=>a.correct).length;
+  const score=Math.round((correct/answers.length)*1000);
+  state.challenge.completed=true; state.challenge.score=score; state.challenge.answers=answers;
+  if(score>state.stats.challenge.best)state.stats.challenge.best=score;
+  // Update streak
+  const today=todayKey();
+  const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
+  if(state.stats.challenge.lastDate===yesterday())state.stats.challenge.streak++;
+  else if(state.stats.challenge.lastDate!==today)state.stats.challenge.streak=1;
+  state.stats.challenge.lastDate=today;
+  state.screen='challenge'; render();
+}
+
+/* ════════════════════════════════════════════════════════════
+   MELODIC DICTATION
+════════════════════════════════════════════════════════════ */
+function startDictado(){
+  const mel=pick(MELODIAS);
+  state.dictado={melody:mel,userInput:[],submitted:false,playCount:0};
+  state.screen='dictado'; render();
+  setTimeout(()=>playMelodyDictado(),400);
+}
+
+function playMelodyDictado(){
+  if(!state.dictado.melody)return;
+  state.dictado.playCount++;
+  playMelody(state.dictado.melody.midis);
+  render();
+}
+
+function dictadoEnterNote(noteName){
+  if(state.dictado.submitted)return;
+  const mel=state.dictado.melody;
+  if(state.dictado.userInput.length>=mel.midis.length)return;
+  state.dictado.userInput.push(noteName);
+  render();
+}
+
+function dictadoErase(){
+  if(state.dictado.submitted)return;
+  state.dictado.userInput.pop(); render();
+}
+
+function dictadoSubmit(){
+  if(state.dictado.submitted)return;
+  const mel=state.dictado.melody;
+  const correct=mel.midis.map(m=>NOTAS[m%12]);
+  const inp=state.dictado.userInput;
+  const numCorrect=inp.filter((n,i)=>n===correct[i]).length;
+  const isOk=numCorrect===mel.midis.length;
+  state.dictado.submitted=true;
+  state.stats.dictado.total++;
+  if(isOk)state.stats.dictado.correct++;
+  if(isOk)state.streak++;else state.streak=0;
+  render();
+}
+
+/* ════════════════════════════════════════════════════════════
+   CHORD PROGRESSION
+════════════════════════════════════════════════════════════ */
+function startProgresion(){
+  const correct=pick(PROGRESIONES);
+  const others=shuffle(PROGRESIONES.filter(p=>p.n!==correct.n)).slice(0,3);
+  const options=shuffle([correct,...others]).map(p=>p.n);
+  state.progresion={prog:correct,options,selected:null,answered:false,currentChord:-1,playing:false};
+  state.screen='progresion'; render();
+  setTimeout(()=>playProg(),400);
+}
+
+function playProg(){
+  if(!state.progresion.prog)return;
+  const prog=state.progresion.prog;
+  state.progresion.playing=true; render();
+  const root=60;
+  const chordsMidis=prog.chords.map(c=>c.st.map(s=>root+s));
+  chordsMidis.forEach((_,i)=>{
+    setTimeout(()=>{state.progresion.currentChord=i;render();},i*1300);
+  });
+  playProgression(chordsMidis,1.2);
+  setTimeout(()=>{state.progresion.playing=false;state.progresion.currentChord=-1;render();},chordsMidis.length*1300+400);
+}
+
+function answerProg(opt){
+  if(state.progresion.answered)return;
+  const isOk=opt===state.progresion.prog.n;
+  state.progresion.selected=opt; state.progresion.answered=true;
+  state.stats.progresion.total++;
+  if(isOk){state.stats.progresion.correct++;state.streak++;}else state.streak=0;
+  render();
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONFIG HELPERS
+════════════════════════════════════════════════════════════ */
+function cfgSelCount(){
+  const t=state.exType;
+  if(t==='intervalos')return state.cfg.selIntervals.length;
+  if(t==='acordes')return state.cfg.selChords.length;
+  if(t==='escalas')return state.cfg.selScales.length;
+  if(t==='modos')return state.cfg.selModes.length;
+  return 99;
+}
+let _toastT=null;
+function showToast(msg){
+  let t=document.getElementById('_toast');
+  if(!t){
+    t=document.createElement('div');t.id='_toast';
+    t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--err);color:#fff;padding:9px 18px;border-radius:50px;font-size:12px;font-weight:700;font-family:Nunito,sans-serif;z-index:999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;';
+    document.getElementById('root').appendChild(t);
+  }
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(_toastT);_toastT=setTimeout(()=>{t.style.opacity='0';},1800);
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER ENGINE
+════════════════════════════════════════════════════════════ */
+function render(){
+  const root=document.getElementById('root');
+  root.innerHTML='';
+  if(state.screen==='home')state.navTab='home';
+  if(state.screen==='stats')state.navTab='stats';
+  if(state.screen==='challenge'&&!state.challenge.completed)state.navTab='challenge';
+
+  const s=state.screen;
+  if(s==='home')renderHome(root);
+  else if(s==='config')renderConfig(root);
+  else if(s==='exercise')renderExercise(root);
+  else if(s==='dictado')renderDictado(root);
+  else if(s==='progresion')renderProgresion(root);
+  else if(s==='challenge')renderChallenge(root);
+  else if(s==='ad')renderAd(root);
+  else if(s==='results')renderResults(root);
+  else if(s==='stats')renderStats(root);
+  else if(s==='upgrade')renderUpgrade(root);
+
+  if(['home','stats','challenge'].includes(s)){
+    const nav=el('div',{id:'bottom-nav'});
+    [
+      {tab:'home',icon:'🎵',label:'Práctica'},
+      {tab:'challenge',icon:'🏆',label:'Challenge'},
+      {tab:'stats',icon:'📊',label:'Progreso'},
+    ].forEach(({tab,icon,label})=>{
+      const ni=el('button',{class:`nav-item${state.navTab===tab?' active':''}`},[
+        el('span',{class:'nav-icon'},[icon]),
+        el('span',{class:'nav-label'},[label]),
+      ]);
+      ni.onclick=()=>{
+        if((tab==='challenge')&&!state.isPro){state.screen='upgrade';render();return;}
+        state.navTab=tab;
+        state.screen=tab==='home'?'home':tab==='stats'?'stats':'challenge';
+        render();
+      };
+      nav.appendChild(ni);
+    });
+    root.appendChild(nav);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   HOME
+════════════════════════════════════════════════════════════ */
+const FREE_CATS=[
+  {type:'intervalos',icon:'🎵',title:'Intervalos',desc:'Reconoce distancias entre notas',color:'#d4a031',count:INTERVALOS.length},
+  {type:'acordes',icon:'🎹',title:'Acordes',desc:'Triadas, 7ª e inversiones',color:'#dd5e22',count:ACORDES.length},
+  {type:'escalas',icon:'🎼',title:'Escalas',desc:'Mayor, menor, blues y más',color:'#38c96c',count:ESCALAS.length},
+  {type:'modos',icon:'🌙',title:'Modos',desc:'Jónico, dórico, frigio...',color:'#8a6cf7',count:MODOS.length},
+];
+const PRO_CATS=[
+  {type:'dictado',icon:'🖊️',title:'Dictado melódico',desc:'Transcribí nota por nota',color:'#5b8dee'},
+  {type:'progresion',icon:'🎸',title:'Progresiones',desc:'Identifica acordes en contexto',color:'#e03a3a'},
+];
+
+function renderHome(root){
+  const sc=el('div',{class:'screen'});
+  const staffSvg=`<svg class="staff-deco" viewBox="0 0 120 85" xmlns="http://www.w3.org/2000/svg">
+    ${[18,30,42,54,66].map(y=>`<line x1="0" y1="${y}" x2="120" y2="${y}" stroke="white" stroke-width="1.5"/>`).join('')}
+    <text x="8" y="62" fill="white" font-size="52" font-family="serif" opacity="0.8">𝄞</text>
+    <ellipse cx="88" cy="42" rx="6" ry="4.5" fill="white"/>
+    <line x1="94" y1="18" x2="94" y2="42" stroke="white" stroke-width="1.5"/>
+  </svg>`;
+  const hdr=el('div',{class:'header'});
+  hdr.innerHTML=`${staffSvg}<div><div class="logo">Audio Perceptiva</div><div class="logo-sub">Entrenamiento auditivo</div></div>`;
+  const rw=el('div',{class:'header-right'});
+  rw.appendChild(el('div',{class:'streak-badge'},[`🔥 ${state.streak}`]));
+  if(!state.isPro){
+    const upBtn=el('button',{class:'pro-pill'},['⭐ PRO']);
+    upBtn.onclick=()=>{state.screen='upgrade';render();};
+    rw.appendChild(upBtn);
+  }else{
+    rw.appendChild(el('span',{class:'pro-pill',style:'cursor:default'},['⭐ PRO']));
+  }
+  hdr.appendChild(rw);
+  sc.appendChild(hdr);
+
+  const tc=Object.values(state.stats).filter(s=>s.total!==undefined).reduce((a,s)=>a+s.total,0);
+  const cc=Object.values(state.stats).filter(s=>s.correct!==undefined).reduce((a,s)=>a+s.correct,0);
+  const qs=el('div',{class:'quick-stats'},[
+    qstat(state.totalDone,'Sesiones'),qstat(tc,'Ejercicios'),
+    qstat(tc?`${pct(cc,tc)}%`:'—','Aciertos'),qstat(state.streak,'Racha'),
+  ]);
+  sc.appendChild(qs);
+  sc.appendChild(el('div',{class:'divider'}));
+  sc.appendChild(el('div',{class:'section-title'},['Ejercicios gratuitos']));
+
+  const cats=el('div',{class:'cats'});
+  FREE_CATS.forEach(cat=>{
+    const card=el('div',{class:'cat-card'});
+    card.innerHTML=`<div class="cc-glow" style="background:${cat.color}"></div>
+      <span class="cat-icon">${cat.icon}</span>
+      <div class="cat-title">${cat.title}</div>
+      <div class="cat-desc">${cat.desc}</div>
+      <div class="cat-count">${cat.count}</div>`;
+    card.onclick=()=>{state.exType=cat.type;state.screen='config';render();};
+    cats.appendChild(card);
+  });
+  sc.appendChild(cats);
+
+  sc.appendChild(el('div',{class:'divider'}));
+  sc.appendChild(el('div',{class:'section-title'},['Ejercicios Pro']));
+  const pcats=el('div',{class:'cats'});
+  PRO_CATS.forEach(cat=>{
+    const card=el('div',{class:`cat-card pro-card`});
+    const lockBadge=state.isPro?'':'<span class="pro-lock">PRO</span>';
+    card.innerHTML=`<div class="cc-glow" style="background:${cat.color}"></div>
+      <span class="cat-icon">${cat.icon}</span>
+      <div class="cat-title">${cat.title} ${lockBadge}</div>
+      <div class="cat-desc">${cat.desc}</div>`;
+    card.onclick=()=>{
+      if(!state.isPro){state.screen='upgrade';render();return;}
+      if(cat.type==='dictado')startDictado();
+      else if(cat.type==='progresion')startProgresion();
+    };
+    pcats.appendChild(card);
+  });
+  sc.appendChild(pcats);
+
+  if(!state.isPro){
+    const banner=el('div',{class:'upsell-banner',style:'margin-top:12px;'});
+    banner.innerHTML=`<div class="upsell-left"><div class="upsell-title">⭐ Audio Perceptiva Pro</div>
+      <div class="upsell-sub">Dictado melódico · Progresiones · Daily challenge · Sin anuncios</div></div>
+      <div class="upsell-arrow">Ver →</div>`;
+    banner.onclick=()=>{state.screen='upgrade';render();};
+    sc.appendChild(banner);
+  }
+  root.appendChild(sc);
+}
+
+function qstat(val,label){
+  return el('div',{class:'qs-card'},[el('div',{class:'qs-val'},[String(val)]),el('div',{class:'qs-label'},[label])]);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONFIG SCREEN
+════════════════════════════════════════════════════════════ */
+const CAT_META={
+  intervalos:{icon:'🎵',title:'Intervalos'},
+  acordes:{icon:'🎹',title:'Acordes'},
+  escalas:{icon:'🎼',title:'Escalas'},
+  modos:{icon:'🌙',title:'Modos'},
+};
+function renderConfig(root){
+  const sc=el('div',{class:'screen'});
+  const meta=CAT_META[state.exType]||{icon:'🎵',title:state.exType};
+  const hdr=el('div',{class:'header'});
+  const bb=el('button',{class:'back-btn'},['←']);bb.onclick=()=>{state.screen='home';render();};
+  hdr.appendChild(bb);
+  hdr.innerHTML+=`<div><div class="logo" style="font-size:16px">${meta.icon} ${meta.title}</div><div class="logo-sub">Configuración</div></div>`;
+  sc.appendChild(hdr);
+  const body=el('div',{class:'config-body'});
+
+  // Tonalidad
+  body.appendChild(cfgSec('Tonalidad',null,()=>{
+    const w=el('div',{class:'sel-wrap'});
+    const sel=document.createElement('select');sel.className='styled';
+    [{v:null,l:'Aleatoria'},...NOTAS.map((n,i)=>({v:i,l:n}))].forEach(o=>{
+      const op=document.createElement('option');op.value=o.v===null?'':o.v;op.textContent=o.l;
+      if((state.cfg.tonality===null&&o.v===null)||(state.cfg.tonality===o.v))op.selected=true;
+      sel.appendChild(op);
+    });
+    sel.onchange=()=>{const v=sel.value;state.cfg.tonality=v===''?null:parseInt(v);};
+    w.appendChild(sel);return w;
+  }));
+
+  if(state.exType==='intervalos'){
+    body.appendChild(cfgSec('Intervalos',null,()=>{
+      const w=el('div',{class:'chips-wrap'});
+      INTERVALOS.forEach(iv=>{
+        const on=state.cfg.selIntervals.includes(iv.st);
+        const c=el('button',{class:`chip${on?' on':''}`},[iv.n]);
+        c.onclick=()=>{
+          const s=state.cfg.selIntervals,i=s.indexOf(iv.st);
+          if(i>=0){if(s.length<=2){showToast('Mínimo 2 intervalos');return;}s.splice(i,1);}else s.push(iv.st);render();
+        };w.appendChild(c);});return w;
+    }));
+    body.appendChild(cfgSec('Modo',null,()=>{
+      const seg=el('div',{class:'seg-control'});
+      [['harmonic','Armónico'],['melodic','Melódico']].forEach(([v,l])=>{
+        const b=el('button',{class:`seg-btn${state.cfg.intervalMode===v?' on':''}`},[l]);
+        b.onclick=()=>{state.cfg.intervalMode=v;render();};seg.appendChild(b);});return seg;
+    }));
+  }
+  if(state.exType==='acordes'){
+    body.appendChild(cfgSec('Tipos de acorde',null,()=>{
+      const w=el('div',{class:'chips-wrap'});
+      ACORDES.forEach(a=>{
+        const on=state.cfg.selChords.includes(a.n);
+        const c=el('button',{class:`chip${on?' on':''}`},[a.n]);
+        c.onclick=()=>{
+          const s=state.cfg.selChords,i=s.indexOf(a.n);
+          if(i>=0){if(s.length<=2){showToast('Mínimo 2 acordes');return;}s.splice(i,1);}else s.push(a.n);render();
+        };w.appendChild(c);});return w;
+    }));
+    body.appendChild(cfgSec('Inversiones máximas',null,()=>{
+      const seg=el('div',{class:'seg-control'});
+      ['0','1','2','3'].forEach((v,i)=>{
+        const labels=['Fund.','1ª inv.','2ª inv.','3ª inv.'];
+        const b=el('button',{class:`seg-btn${state.cfg.maxInversion===i?' on':''}`},[labels[i]]);
+        b.onclick=()=>{state.cfg.maxInversion=i;render();};seg.appendChild(b);});return seg;
+    }));
+    body.appendChild(el('div',{class:'cfg-section'},[toggleRow('Arpegio','Tocar las notas en secuencia',state.cfg.arpeggio,()=>{state.cfg.arpeggio=!state.cfg.arpeggio;render();})]));
+  }
+  if(state.exType==='escalas'){
+    body.appendChild(cfgSec('Escalas',null,()=>{
+      const w=el('div',{class:'chips-wrap'});
+      ESCALAS.forEach(e=>{
+        const on=state.cfg.selScales.includes(e.n);
+        const c=el('button',{class:`chip${on?' on':''}`},[e.n]);
+        c.onclick=()=>{
+          const s=state.cfg.selScales,i=s.indexOf(e.n);
+          if(i>=0){if(s.length<=2){showToast('Mínimo 2 escalas');return;}s.splice(i,1);}else s.push(e.n);render();
+        };w.appendChild(c);});return w;
+    }));
+  }
+  if(state.exType==='modos'){
+    body.appendChild(cfgSec('Modos',null,()=>{
+      const w=el('div',{class:'chips-wrap'});
+      MODOS.forEach(m=>{
+        const on=state.cfg.selModes.includes(m.n);
+        const c=el('button',{class:`chip${on?' on':''}`},[m.n]);
+        c.onclick=()=>{
+          const s=state.cfg.selModes,i=s.indexOf(m.n);
+          if(i>=0){if(s.length<=2){showToast('Mínimo 2 modos');return;}s.splice(i,1);}else s.push(m.n);render();
+        };w.appendChild(c);});return w;
+    }));
+  }
+  body.appendChild(cfgSec('Preguntas por sesión',null,()=>{
+    const seg=el('div',{class:'seg-control'});
+    [5,10,15,20].forEach(n=>{
+      const b=el('button',{class:`seg-btn${state.cfg.questionsN===n?' on':''}`},[String(n)]);
+      b.onclick=()=>{state.cfg.questionsN=n;render();};seg.appendChild(b);});return seg;
+  }));
+  sc.appendChild(body);
+  const ft=el('div',{class:'config-footer'});
+  const cnt=cfgSelCount();
+  ft.appendChild(el('div',{style:'font-size:10px;color:var(--sub);text-align:center;margin-bottom:8px;'},
+    [`${cnt} seleccionado${cnt!==1?'s':''} · opciones incluyen distractores del pool completo`]));
+  const sb=el('button',{class:'btn-primary'},['▶  Comenzar práctica']);
+  sb.onclick=()=>startSession(state.exType,state.cfg);ft.appendChild(sb);
+  sc.appendChild(ft);root.appendChild(sc);
+}
+
+function cfgSec(title,sub,contentFn){
+  const sec=el('div',{class:'cfg-section'});
+  sec.appendChild(el('div',{class:'cfg-title'},[title]));
+  if(sub)sec.appendChild(el('div',{class:'cfg-sub'},[sub]));
+  sec.appendChild(contentFn());return sec;
+}
+function toggleRow(label,sub,value,onChange){
+  const row=el('div',{class:'toggle-row'});
+  const left=el('div',null,[el('div',{class:'trow-label'},[label]),el('div',{class:'trow-sub'},[sub])]);
+  const tog=el('button',{class:`toggle${value?' on':''}`});tog.onclick=onChange;
+  row.appendChild(left);row.appendChild(tog);return row;
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXERCISE SCREEN
+════════════════════════════════════════════════════════════ */
+const TYPE_LABELS={intervalos:'Identificar intervalo',acordes:'Identificar acorde',
+  escalas:'Identificar escala',modos:'Identificar modo',challenge:'Challenge diario'};
+function renderExercise(root){
+  const sc=el('div',{class:'screen no-nav'});
+  const {session,answered,selected,playing}=state;
+  const ex=session.exercises[session.current];
+  const total=session.exercises.length,cur=session.current;
+  const progPct=((cur+(answered?1:0))/total)*100;
+  const hdr=el('div',{class:'ex-header'});
+  const bb=el('button',{class:'back-btn'},['←']);
+  bb.onclick=()=>{state.screen='home';render();};
+  const pw=el('div',{class:'ex-progress-wrap'},[
+    el('div',{class:'ex-counter'},[`${cur+1} / ${total}`]),
+    el('div',{class:'progress-bar'},[el('div',{class:'progress-fill',style:`width:${progPct}%`})]),
+  ]);
+  hdr.appendChild(bb);hdr.appendChild(pw);
+  hdr.appendChild(el('div',{class:'ex-type-badge'},[TYPE_LABELS[state.exType]||state.exType]));
+  sc.appendChild(hdr);
+
+  const pz=el('div',{class:'ex-play-zone'});
+  pz.appendChild(el('div',{class:'ex-prompt'},['Escuchá y respondé']));
+  pz.appendChild(el('div',{class:'note-display'},[`♩ ${ex.noteName||'?'} ♩`]));
+  const pb=el('button',{class:`play-btn${playing?' playing':''}`});
+  pb.innerHTML=playing?'♪':'▶';pb.onclick=handlePlay;
+  pz.appendChild(pb);
+  pz.appendChild(el('div',{class:'play-label'},[playing?'Escuchando...':'Toca para escuchar']));
+  sc.appendChild(pz);
+
+  const grid=el('div',{class:'options-grid'});
+  ex.options.forEach(opt=>{
+    let cls='opt-btn';
+    if(answered){if(opt===ex.correct)cls+=' reveal';if(opt===selected&&selected!==ex.correct)cls+=' wrong';}
+    const btn=el('button',{class:cls,disabled:answered?'true':null},[opt]);
+    if(!answered)btn.onclick=()=>handleAnswer(opt);
+    grid.appendChild(btn);
+  });
+  sc.appendChild(grid);
+
+  if(answered){
+    const isOk=selected===ex.correct;
+    sc.appendChild(el('div',{class:`feedback-bar ${isOk?'ok':'ko'}`},[
+      el('span',null,[isOk?'✓ ¡Correcto!':'✗ Correcto: '+ex.correct])
+    ]));
+    const nw=el('div',{class:'next-btn-wrap'});
+    const last=cur===total-1;
+    const nb=el('button',{class:'btn-primary'},[last?'Ver resultados':'Siguiente →']);
+    nb.onclick=()=>{
+      if(state.exType==='challenge'){
+        state.challenge.answers.push(...state.session.answers.slice(-1));
+        if(last)finishChallenge(state.session.answers);else handleNext();
+      } else {handleNext();}
+    };
+    nw.appendChild(nb);sc.appendChild(nw);
+  }
+  root.appendChild(sc);
+}
+
+/* ════════════════════════════════════════════════════════════
+   MELODIC DICTATION SCREEN
+════════════════════════════════════════════════════════════ */
+function renderDictado(root){
+  const sc=el('div',{class:'screen no-nav'});
+  const mel=state.dictado.melody;
+  const hdr=el('div',{class:'ex-header'});
+  const bb=el('button',{class:'back-btn'},['←']);bb.onclick=()=>{state.screen='home';render();};
+  hdr.appendChild(bb);
+  hdr.innerHTML+=`<div style="flex:1"><div style="font-family:Cinzel,serif;font-size:11px;color:var(--sub);margin-bottom:4px;">DICTADO MELÓDICO</div>
+    <div style="font-size:13px;font-weight:700;">${mel.n}</div>
+    <div style="font-size:10px;color:var(--sub)">${mel.desc}</div></div>`;
+  sc.appendChild(hdr);
+
+  // Play zone
+  const pz=el('div',{class:'ex-play-zone'});
+  const pb=el('button',{class:'play-btn'});pb.innerHTML='▶';
+  pb.onclick=playMelodyDictado;pz.appendChild(pb);
+  pz.appendChild(el('div',{class:'play-label'},[`Reproducida ${state.dictado.playCount} vez${state.dictado.playCount!==1?'ces':''} · sin límite`]));
+  sc.appendChild(pz);
+
+  // Staff / slots
+  const staff=el('div',{class:'melody-staff'});
+  staff.appendChild(el('div',{class:'melody-staff-title'},['Tu transcripción']));
+  const slots=el('div',{class:'melody-slots'});
+  const correct=mel.midis.map(m=>NOTAS[m%12]);
+  mel.midis.forEach((_,i)=>{
+    const entered=state.dictado.userInput[i];
+    const isActive=!state.dictado.submitted&&i===state.dictado.userInput.length;
+    let cls='mel-slot';
+    if(state.dictado.submitted&&entered){
+      cls+=entered===correct[i]?' correct':' wrong';
+    } else if(entered){cls+=' filled';}
+    else if(isActive){cls+=' active';}
+    const slot=el('div',{class:cls},[entered||'']);
+    slots.appendChild(slot);
+  });
+  staff.appendChild(slots);
+  if(state.dictado.submitted){
+    const numCorr=state.dictado.userInput.filter((n,i)=>n===correct[i]).length;
+    const p2=pct(numCorr,mel.midis.length);
+    staff.appendChild(el('div',{style:`margin-top:10px;font-size:11px;color:${p2===100?'var(--ok)':'var(--err)'};font-weight:700;text-align:center;`},
+      [p2===100?'¡Perfecto! ✓':`${numCorr}/${mel.midis.length} notas correctas`]));
+    if(p2<100){
+      staff.appendChild(el('div',{style:'font-size:10px;color:var(--sub);text-align:center;margin-top:4px;'},
+        [`Correcto: ${correct.join(' · ')}`]));
+    }
+  }
+  sc.appendChild(staff);
+
+  if(!state.dictado.submitted){
+    // Keyboard (note input)
+    const kb=el('div',{class:'mel-keyboard'});
+    NOTAS.forEach(n=>{
+      const k=el('div',{class:`mel-key${n.includes('♯')?' sharp':''}`},[n]);
+      k.onclick=()=>dictadoEnterNote(n);
+      kb.appendChild(k);
+    });
+    sc.appendChild(kb);
+    const mact=el('div',{class:'mel-actions'});
+    const er=el('button',{class:'mel-erase'},['⌫ Borrar']);er.onclick=dictadoErase;
+    const full=state.dictado.userInput.length>=mel.midis.length;
+    const sb=el('button',{class:'btn-primary',style:'flex:2',disabled:!full?'true':null},['Confirmar transcripción']);
+    if(full)sb.onclick=dictadoSubmit;
+    mact.appendChild(er);mact.appendChild(sb);
+    sc.appendChild(mact);
+  } else {
+    const acts=el('div',{class:'next-btn-wrap',style:'padding:16px 20px;display:flex;flex-direction:column;gap:8px;'});
+    const nb=el('button',{class:'btn-primary'},['Siguiente melodía']);
+    nb.onclick=startDictado;
+    const hb=el('button',{class:'btn-secondary'},['Volver al inicio']);
+    hb.onclick=()=>{state.screen='home';render();};
+    acts.appendChild(nb);acts.appendChild(hb);sc.appendChild(acts);
+  }
+  root.appendChild(sc);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CHORD PROGRESSION SCREEN
+════════════════════════════════════════════════════════════ */
+function renderProgresion(root){
+  const sc=el('div',{class:'screen no-nav'});
+  const prog=state.progresion.prog;
+  const hdr=el('div',{class:'ex-header'});
+  const bb=el('button',{class:'back-btn'},['←']);bb.onclick=()=>{state.screen='home';render();};
+  hdr.appendChild(bb);
+  hdr.innerHTML+=`<div style="flex:1"><div style="font-family:Cinzel,serif;font-size:10px;color:var(--sub);letter-spacing:2px;">PROGRESIÓN DE ACORDES</div></div>`;
+  hdr.appendChild(el('div',{class:'ex-type-badge'},['Identificar progresión']));
+  sc.appendChild(hdr);
+
+  // Chord display
+  const pd=el('div',{class:'prog-display'});
+  prog.chords.forEach((c,i)=>{
+    const isNow=i===state.progresion.currentChord;
+    const card=el('div',{class:`prog-chord${isNow?' playing-now':''}`});
+    card.innerHTML=`<div class="prog-chord-name">${isNow?'♪':'?'}</div><div class="prog-chord-num">Acorde ${i+1}</div>`;
+    pd.appendChild(card);
+  });
+  sc.appendChild(pd);
+
+  // Play button
+  const pz=el('div',{class:'ex-play-zone'});
+  const pb=el('button',{class:`play-btn${state.progresion.playing?' playing':''}`});
+  pb.innerHTML=state.progresion.playing?'♪':'▶';pb.onclick=playProg;
+  pz.appendChild(pb);
+  pz.appendChild(el('div',{class:'play-label'},[state.progresion.playing?'Reproduciendo...':'Reproducir progresión']));
+  sc.appendChild(pz);
+
+  // Options
+  const grid=el('div',{class:'options-grid'});
+  state.progresion.options.forEach(opt=>{
+    const ans=state.progresion.answered;
+    let cls='opt-btn';
+    if(ans){if(opt===prog.n)cls+=' reveal';if(opt===state.progresion.selected&&opt!==prog.n)cls+=' wrong';}
+    const btn=el('button',{class:cls,disabled:ans?'true':null},[opt]);
+    if(!ans)btn.onclick=()=>answerProg(opt);
+    grid.appendChild(btn);
+  });
+  sc.appendChild(grid);
+
+  if(state.progresion.answered){
+    const isOk=state.progresion.selected===prog.n;
+    sc.appendChild(el('div',{class:`feedback-bar ${isOk?'ok':'ko'}`},[
+      el('span',null,[isOk?`✓ ¡Correcto! ${prog.desc}`:`✗ Era: ${prog.n} — ${prog.desc}`])
+    ]));
+    const nw=el('div',{class:'next-btn-wrap',style:'display:flex;flex-direction:column;gap:8px;padding:12px 20px;'});
+    const nb=el('button',{class:'btn-primary'},['Siguiente progresión']);nb.onclick=startProgresion;
+    const hb=el('button',{class:'btn-secondary'},['Volver al inicio']);hb.onclick=()=>{state.screen='home';render();};
+    nw.appendChild(nb);nw.appendChild(hb);sc.appendChild(nw);
+  }
+  root.appendChild(sc);
+}
+
+/* ════════════════════════════════════════════════════════════
+   DAILY CHALLENGE
+════════════════════════════════════════════════════════════ */
+function renderChallenge(root){
+  const sc=el('div',{class:'screen'});
+  const hdr=el('div',{class:'header'});
+  hdr.innerHTML=`<div><div class="logo" style="font-size:16px">🏆 Daily Challenge</div><div class="logo-sub">${getDayName()}</div></div>`;
+  const rw=el('div',{class:'header-right'});
+  rw.appendChild(el('div',{class:'streak-badge'},[`🔥 ${state.stats.challenge.streak}`]));
+  hdr.appendChild(rw);sc.appendChild(hdr);
+
+  const completed=state.challenge.completed&&state.challenge.todayKey===todayKey();
+
+  if(completed){
+    // Show score and leaderboard
+    const myScore=state.challenge.score;
+    const lb=[...LEADERBOARD_BASE];
+    // Insert player into leaderboard
+    const myEntry={name:'Vos',score:myScore,streak:state.stats.challenge.streak,color:null,isMe:true};
+    lb.push(myEntry);
+    lb.sort((a,b)=>b.score-a.score);
+    const myRank=lb.findIndex(e=>e.isMe)+1;
+
+    sc.appendChild(el('div',{class:'my-rank-banner'},[
+      el('div',{class:'my-rank-left'},[`Tu puntaje de hoy: ${myScore} pts`]),
+      el('div',null,[el('div',{class:'my-rank-pos'},[`#${myRank}`]),el('div',{style:'font-size:10px;color:var(--sub);'},[`de ${lb.length}`])]),
+    ]));
+
+    sc.appendChild(el('div',{class:'section-title'},['Ranking de hoy']));
+    const list=el('div',{class:'ranking-list'});
+    lb.slice(0,12).forEach((entry,i)=>{
+      const pos=i+1;
+      const posColor=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';
+      const item=el('div',{class:'rank-item'});
+      const avatar=el('div',{class:'rank-avatar',style:`background:${entry.color||'var(--gold)'};opacity:${entry.color?1:.15}`});
+      avatar.textContent=(entry.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      item.appendChild(el('div',{class:`rank-pos${posColor?' '+posColor:''}`},[`${pos}`]));
+      item.appendChild(avatar);
+      const info=el('div',{class:'rank-info'});
+      info.appendChild(el('div',{class:`rank-name${entry.isMe?' is-me':''}`},[entry.isMe?'⭐ Vos':entry.name]));
+      info.appendChild(el('div',{class:'rank-sub'},[`🔥 ${entry.streak} días`]));
+      item.appendChild(info);
+      item.appendChild(el('div',{class:'rank-score'},[`${entry.score}`]));
+      list.appendChild(item);
+    });
+    sc.appendChild(list);
+  } else {
+    // Challenge not done yet
+    sc.appendChild(el('div',{class:'challenge-hero'},[
+      el('div',{class:'challenge-date'},[getDayName()]),
+      el('div',{class:'challenge-title'},['Desafío del día']),
+      el('div',{class:'challenge-sub'},['10 preguntas · intervalos, acordes, escalas y modos\nCompetí contra la comunidad global']),
+    ]));
+    sc.appendChild(el('div',{class:'section-title'},['Ranking de ayer']));
+    const list=el('div',{class:'ranking-list'});
+    LEADERBOARD_BASE.slice(0,8).forEach((entry,i)=>{
+      const pos=i+1;
+      const posColor=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';
+      const item=el('div',{class:'rank-item'});
+      const avatar=el('div',{class:'rank-avatar',style:`background:${entry.color}`});
+      avatar.textContent=entry.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+      item.appendChild(el('div',{class:`rank-pos${posColor?' '+posColor:''}`},[`${pos}`]));
+      item.appendChild(avatar);
+      const info=el('div',{class:'rank-info'});
+      info.appendChild(el('div',{class:'rank-name'},[entry.name]));
+      info.appendChild(el('div',{class:'rank-sub'},[`🔥 ${entry.streak} días`]));
+      item.appendChild(info);
+      item.appendChild(el('div',{class:'rank-score'},[`${entry.score}`]));
+      list.appendChild(item);
+    });
+    sc.appendChild(list);
+    const ft=el('div',{style:'padding:16px 20px 0;'});
+    const sb=el('button',{class:'btn-primary'},['🏆  Jugar el challenge de hoy']);
+    sb.onclick=startChallenge;ft.appendChild(sb);sc.appendChild(ft);
+  }
+  root.appendChild(sc);
+}
+
+/* ════════════════════════════════════════════════════════════
+   AD SCREEN
+════════════════════════════════════════════════════════════ */
+function renderAd(root){
+  const sc=el('div',{class:'ad-screen no-nav'});
+  sc.innerHTML=`<div class="ad-label">Publicidad</div>
+    <div class="ad-box"><div style="font-size:36px">📢</div>
+      <div style="font-size:13px;font-weight:600;">Espacio para anunciantes</div>
+      <div style="font-size:11px;color:var(--border2);">300×250 · AdMob / Google Ads</div></div>
+    <div class="ad-countdown">Continúa en ${state.adCountdown}…</div>
+    <div style="font-size:11px;color:var(--sub);">Actualizá a Pro para eliminar los anuncios</div>`;
+  root.appendChild(sc);
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESULTS SCREEN
+════════════════════════════════════════════════════════════ */
+function renderResults(root){
+  const sc=el('div',{class:'screen no-nav'});
+  const hdr=el('div',{class:'header'});
+  hdr.innerHTML=`<div class="logo" style="font-size:16px">🏆 Resultados</div>`;
+  sc.appendChild(hdr);
+  const body=el('div',{class:'results-body'});
+  const answers=state.session.answers;
+  const correct=answers.filter(a=>a.correct).length;
+  const total=state.session.exercises.length;
+  const p=pct(correct,total);
+  const color=p>=70?'var(--ok)':p>=50?'var(--gold)':'var(--err)';
+
+  const cw=el('div',{class:'score-circle-wrap'});
+  const circle=el('div',{class:'score-circle',style:`border-color:${color}`});
+  circle.innerHTML=`<div class="score-pct" style="color:${color}">${p}%</div><div class="score-sub">${correct}/${total} correctas</div>`;
+  cw.appendChild(circle);body.appendChild(cw);
+  body.appendChild(el('div',{class:'stars'},[stars(p)]));
+
+  const sr=el('div',{class:'result-stat-row'});
+  sr.appendChild(rstat(correct,'✓ Correctas','var(--ok)'));
+  sr.appendChild(rstat(total-correct,'✗ Errores','var(--err)'));
+  sr.appendChild(rstat(`${state.streak}🔥`,'Racha','var(--gold)'));
+  body.appendChild(sr);
+
+  if(!state.isPro){
+    body.appendChild(el('div',{class:'ad-banner'},[el('span',{style:'font-size:10px;color:var(--sub);'},['📢 Banner 320×50 · AdMob'])]));
+  }
+
+  const ar=el('div',null,[el('div',{class:'ar-title'},['Detalle'])]);
+  answers.forEach(a=>{
+    const item=el('div',{class:'ar-item'});
+    item.innerHTML=`<div class="ar-dot" style="background:${a.correct?'var(--ok)':'var(--err)'}"></div>
+      <div><div style="font-weight:700;color:${a.correct?'var(--ok)':'var(--err)'}">${a.selected}</div>
+      ${!a.correct?`<div style="color:var(--sub)">Correcto: ${a.answer}</div>`:''}</div>`;
+    ar.appendChild(item);
+  });
+  body.appendChild(ar);
+
+  const acts=el('div',{class:'results-actions'});
+  const rb=el('button',{class:'btn-primary'},['↺ Repetir sesión']);
+  rb.onclick=()=>startSession(state.exType,state.cfg);
+  const hb=el('button',{class:'btn-secondary'},['⌂ Volver al inicio']);
+  hb.onclick=()=>{state.screen='home';state.navTab='home';render();};
+  acts.appendChild(rb);acts.appendChild(hb);body.appendChild(acts);
+  sc.appendChild(body);root.appendChild(sc);
+}
+function rstat(val,label,color){
+  return el('div',{class:'rstat'},[el('div',{class:'rstat-val',style:`color:${color}`},[String(val)]),el('div',{class:'rstat-label'},[label])]);
+}
+
+/* ════════════════════════════════════════════════════════════
+   STATS SCREEN
+════════════════════════════════════════════════════════════ */
+function renderStats(root){
+  const sc=el('div',{class:'screen'});
+  const hdr=el('div',{class:'header'});
+  hdr.innerHTML=`<div><div class="logo" style="font-size:16px">📊 Mi progreso</div><div class="logo-sub">estadísticas de entrenamiento</div></div>`;
+  sc.appendChild(hdr);
+  const body=el('div',{class:'stats-body'});
+  const allTotal=Object.values(state.stats).reduce((a,s)=>a+(s.total||0),0);
+  if(!allTotal){
+    body.appendChild(el('div',{class:'empty-stats'},[el('div',{style:'font-size:40px;margin-bottom:12px;'},['🎵']),el('p',null,['Completá tu primera sesión'])]));
+  } else {
+    [
+      {k:'intervalos',icon:'🎵',title:'Intervalos'},
+      {k:'acordes',icon:'🎹',title:'Acordes'},
+      {k:'escalas',icon:'🎼',title:'Escalas'},
+      {k:'modos',icon:'🌙',title:'Modos'},
+      {k:'dictado',icon:'🖊️',title:'Dictado melódico'},
+      {k:'progresion',icon:'🎸',title:'Progresiones'},
+    ].forEach(({k,icon,title})=>{
+      const s=state.stats[k];if(!s||!s.total)return;
+      const p2=pct(s.correct,s.total);
+      const card=el('div',{class:'stat-card'});
+      card.innerHTML=`<div class="stat-card-header"><span class="stat-card-icon">${icon}</span>
+        <div><div class="stat-card-title">${title}</div>
+        <div class="stat-card-sub">${s.total} ej · ${s.correct} correctos</div></div></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-label"><span class="stat-bar-name">Precisión</span><span class="stat-bar-pct">${p2}%</span></div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${p2}%"></div></div></div>`;
+      if(s.history&&s.history.length>1)card.appendChild(buildSparkline(s.history));
+      body.appendChild(card);
+    });
+
+    const ch=state.stats.challenge;
+    if(ch.best>0){
+      const ov=el('div',{class:'stat-card',style:'border-color:var(--gold);'});
+      ov.innerHTML=`<div class="stat-card-header"><span class="stat-card-icon">🏆</span>
+        <div><div class="stat-card-title">Daily Challenge</div>
+        <div class="stat-card-sub">Racha: ${ch.streak} días · Mejor: ${ch.best} pts</div></div></div>`;
+      body.appendChild(ov);
+    }
+  }
+  sc.appendChild(body);root.appendChild(sc);
+}
+function buildSparkline(history){
+  const w=280,h=38,n=Math.min(history.length,30),data=history.slice(-n),step=w/Math.max(data.length-1,1);
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.style.cssText='width:100%;height:38px;margin-top:8px;';
+  const poly=document.createElementNS('http://www.w3.org/2000/svg','polyline');
+  poly.setAttribute('points',data.map((v,i)=>`${i*step},${v?8:28}`).join(' '));
+  poly.setAttribute('fill','none');poly.setAttribute('stroke','var(--gold)');poly.setAttribute('stroke-width','2');
+  poly.setAttribute('stroke-linecap','round');poly.setAttribute('stroke-linejoin','round');svg.appendChild(poly);
+  data.forEach((v,i)=>{
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',i*step);c.setAttribute('cy',v?8:28);c.setAttribute('r','3');
+    c.setAttribute('fill',v?'var(--ok)':'var(--err)');svg.appendChild(c);
+  });
+  return svg;
+}
+
+/* ════════════════════════════════════════════════════════════
+   UPGRADE SCREEN
+════════════════════════════════════════════════════════════ */
+function renderUpgrade(root){
+  const sc=el('div',{class:'screen no-nav'});
+  const hdr=el('div',{class:'header'});
+  const bb=el('button',{class:'back-btn'},['←']);bb.onclick=()=>{state.screen='home';render();};
+  hdr.appendChild(bb);sc.appendChild(hdr);
+  const body=el('div',{class:'upgrade-screen'});
+  body.innerHTML=`<div class="upgrade-hero">
+    <span class="upgrade-icon">⭐</span>
+    <div class="upgrade-title">Audio Perceptiva Pro</div>
+    <div class="upgrade-sub">Todo el contenido básico es gratis.<br>Pro desbloquea las herramientas avanzadas.</div></div>`;
+  const feats=el('div',{class:'upgrade-features'});
+  [
+    {icon:'🖊️',title:'Dictado melódico',sub:'Escuchá melodías y transcribilas nota por nota. Incluye piezas clásicas, escalas y frases modales.'},
+    {icon:'🎸',title:'Progresiones de acordes',sub:'Identificá progresiones completas con inversiones en contexto armónico real.'},
+    {icon:'🏆',title:'Daily Challenge + Ranking global',sub:'Un desafío diferente cada día. Competí con músicos de todo el mundo y seguí tu racha.'},
+    {icon:'🚫',title:'Sin publicidad',sub:'Pasás directo a resultados sin esperas entre sesiones.'},
+    {icon:'♾️',title:'Actualizaciones incluidas',sub:'Acceso a todo el contenido futuro sin costo adicional.'},
+  ].forEach(f=>{
+    const feat=el('div',{class:'upgrade-feat'});
+    feat.innerHTML=`<span class="feat-icon">${f.icon}</span><div><div class="feat-title">${f.title}</div><div class="feat-sub">${f.sub}</div></div>`;
+    feats.appendChild(feat);
+  });
+  body.appendChild(feats);
+  body.innerHTML+=`<div class="price-card"><div class="price-amount">$4.99</div>
+    <div class="price-period">pago único · sin suscripción</div>
+    <div class="price-note">Todo el contenido básico siempre gratis</div></div>`;
+  const cta=el('button',{class:'btn-primary',style:'width:100%;margin-bottom:10px;'},['⭐  Obtener Pro — $4.99']);
+  cta.onclick=()=>{state.isPro=true;showToast('¡Bienvenido a Pro! 🎉');state.screen='home';render();};
+  body.appendChild(cta);
+  const rb=el('button',{class:'restore-btn'},['Restaurar compra']);rb.onclick=()=>showToast('Verificando compra...');
+  body.appendChild(rb);
+  sc.appendChild(body);root.appendChild(sc);
+}
+
+/* ════════════════════════════════════════════════════════════
+   DOM HELPER
+════════════════════════════════════════════════════════════ */
+function el(tag,attrs,children){
+  const d=document.createElement(tag);
+  if(attrs)Object.entries(attrs).forEach(([k,v])=>{
+    if(v===null||v===undefined)return;
+    if(k==='class')d.className=v;
+    else if(k==='style')d.style.cssText=v;
+    else if(k==='disabled')d.disabled=true;
+    else d.setAttribute(k,v);
+  });
+  if(children)children.forEach(c=>{
+    if(!c&&c!==0)return;
+    if(typeof c==='string'||typeof c==='number')d.appendChild(document.createTextNode(String(c)));
+    else d.appendChild(c);
+  });
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+render();
+</script>
+</body>
+</html>
