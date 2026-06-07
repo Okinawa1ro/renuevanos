@@ -90,7 +90,6 @@ También funciona en Netlify (arrastrás la carpeta y listo) o cualquier hosting
 | `productos.js` | **Acá editás todo:** datos, pagos y productos. |
 | `manifest.json` | Para que se pueda "instalar" como app en el celular. |
 | `icon-512.png` | El ícono de la app. Podés reemplazarlo por tu logo. |
-| `audio-perceptiva.html` | La app de audio anterior (guardada por las dudas). |
 
 ---
 
