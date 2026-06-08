@@ -457,14 +457,21 @@ function buildOrderText(){
     dir:    (document.getElementById("ckDir")||{}).value || "",
     nota:   (document.getElementById("ckNota")||{}).value || "",
   };
-  let t = `*Nuevo pedido — ${CONFIG.nombre}*%0A%0A`;
-  items.forEach(({p,q})=>{ t += `• ${q} x ${p.nombre} — ${money(p.precio*q)}%0A`; });
-  t += `%0A*Total: ${money(cartTotal())}*%0A%0A`;
-  if(datos.nombre) t += `👤 ${datos.nombre}%0A`;
-  if(datos.tel)    t += `📞 ${datos.tel}%0A`;
-  if(datos.dir)    t += `📍 ${datos.dir}%0A`;
-  if(datos.nota)   t += `📝 ${datos.nota}%0A`;
+  let t = `*Nuevo pedido — ${CONFIG.nombre}*\n\n`;
+  items.forEach(({p,q})=>{ t += `• ${q} x ${p.nombre} — ${money(p.precio*q)}\n`; });
+  t += `\n*Total: ${money(cartTotal())}*\n\n`;
+  if(datos.nombre) t += `👤 ${datos.nombre}\n`;
+  if(datos.tel)    t += `📞 ${datos.tel}\n`;
+  if(datos.dir)    t += `📍 ${datos.dir}\n`;
+  if(datos.nota)   t += `📝 ${datos.nota}\n`;
   return {t, datos};
+}
+
+/* Arma el enlace de WhatsApp codificando el texto de forma segura,
+   para que cualquier carácter que escriba el comprador no rompa ni
+   se "cuele" en el enlace. */
+function waLink(text){
+  return `https://wa.me/${encodeURIComponent(CONFIG.whatsapp)}?text=` + encodeURIComponent(text);
 }
 
 function finish(method){
@@ -478,10 +485,9 @@ function finish(method){
     return;
   }
   const {t} = buildOrderText();
-  const waBase = `https://wa.me/${CONFIG.whatsapp}?text=`;
 
   if(method==="whatsapp"){
-    window.open(waBase + t, "_blank");
+    window.open(waLink(t), "_blank");
     afterOrder("Te llevamos a WhatsApp para confirmar el pedido. ¡Gracias! 💛");
   }
   else if(method==="mp"){
@@ -491,7 +497,7 @@ function finish(method){
       <div class="note">
         <b>Pago con tarjeta (Mercado Pago)</b><br>
         Se abrió la página de pago en otra pestaña. Una vez que pagues, avisanos por WhatsApp con el comprobante para coordinar el envío.<br><br>
-        <a class="btn btn-wa" href="${waBase + t + '%0A%0A(Pago con tarjeta por Mercado Pago)'}" target="_blank" style="margin-top:4px;">💬 Avisar el pago por WhatsApp</a>
+        <a class="btn btn-wa" href="${waLink(t + '\n\n(Pago con tarjeta por Mercado Pago)')}" target="_blank" style="margin-top:4px;">💬 Avisar el pago por WhatsApp</a>
       </div>`;
     document.getElementById("ckExtra").scrollIntoView({behavior:"smooth",block:"center"});
   }
@@ -505,7 +511,7 @@ function finish(method){
         ${tr.titular ? `Titular: <b>${tr.titular}</b><br>`:""}
         Monto: <span class="copy">${money(cartTotal())}</span><br><br>
         Cuando hagas la transferencia, mandanos el comprobante por WhatsApp y coordinamos el envío.<br><br>
-        <a class="btn btn-wa" href="${waBase + t + '%0A%0A(Pago por transferencia)'}" target="_blank" style="margin-top:4px;">💬 Enviar comprobante por WhatsApp</a>
+        <a class="btn btn-wa" href="${waLink(t + '\n\n(Pago por transferencia)')}" target="_blank" style="margin-top:4px;">💬 Enviar comprobante por WhatsApp</a>
       </div>`;
     document.getElementById("ckExtra").scrollIntoView({behavior:"smooth",block:"center"});
   }
