@@ -28,8 +28,8 @@ const CONFIG = {
   // ── Transferencia bancaria (opcional) ───────────────────────────────
   // Si no querés ofrecer transferencia, dejá el alias vacío ("").
   transferencia: {
-    alias:   "TU.ALIAS.MP",         // ⚠️ Falta tu alias de Mercado Pago
-    cbu:     "",                    // CBU o CVU (opcional)
+    alias:   "renuevanos",          // Alias de Mercado Pago
+    cbu:     "0000003100043605425614",  // CVU
     titular: "María Regina Petazzi"
   },
 
