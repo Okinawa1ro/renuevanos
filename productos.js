@@ -11,13 +11,13 @@ const CONFIG = {
 
   // ── Datos de tu tienda ──────────────────────────────────────────────
   nombre:      "Proyecto ReNuevaNos",        // Nombre que aparece arriba
-  eslogan:     "Cerámica, arte y objetos con alma",  // Frase debajo del nombre
+  eslogan:     "Creciendo en el amor",       // Frase debajo del nombre
   moneda:      "$",                          // Símbolo de la moneda
 
   // ── WhatsApp (para recibir los pedidos) ─────────────────────────────
   // Escribí tu número CON código de país y SIN signos, espacios ni el 15.
   // Ejemplo Argentina (Buenos Aires): 5491122334455
-  whatsapp:    "5491100000000",
+  whatsapp:    "5491160136432",
 
   // ── Pago con tarjeta (Mercado Pago) ─────────────────────────────────
   // Pegá acá tu "Link de pago" de Mercado Pago (opcional).
@@ -28,9 +28,9 @@ const CONFIG = {
   // ── Transferencia bancaria (opcional) ───────────────────────────────
   // Si no querés ofrecer transferencia, dejá el alias vacío ("").
   transferencia: {
-    alias:   "TU.ALIAS.MP",
-    cbu:     "",                  // CBU o CVU (opcional)
-    titular: "Nombre del Titular"
+    alias:   "TU.ALIAS.MP",         // ⚠️ Falta tu alias de Mercado Pago
+    cbu:     "",                    // CBU o CVU (opcional)
+    titular: "María Regina Petazzi"
   },
 
   // ── Envíos ──────────────────────────────────────────────────────────
@@ -79,123 +79,35 @@ const CATEGORIAS = [
 
 const PRODUCTOS = [
 
+  // ⚠️ PRECIOS PROVISORIOS: cambiá el número de "precio" por el valor real de cada pieza.
+
   {
     id: 1,
-    nombre: "Jarrón de cerámica esmaltada",
+    nombre: "Florero de cerámica raku — blanco craquelado",
     categoria: "ceramica",
-    precio: 18500,
-    descripcion: "Hecho y pintado a mano. Pieza única, ideal para decoración. Alto 24 cm.",
-    foto: "",
+    precio: 0,
+    descripcion: "Pieza única hecha a mano con técnica raku. Acabado blanco con craquelado natural: cada grieta es irrepetible. Ideal como florero o pieza decorativa.",
+    foto: "fotos/florero-blanco.jpg",
     destacado: true,
     agotado: false
   },
   {
     id: 2,
-    nombre: "Cuenco decorativo artesanal",
+    nombre: "Florero de cerámica raku — verde y cobre",
     categoria: "ceramica",
-    precio: 7800,
-    descripcion: "Cerámica esmaltada en tonos tierra. Perfecto para frutas o como centro de mesa.",
-    foto: "",
-    destacado: false,
+    precio: 0,
+    descripcion: "Pieza única realizada con técnica raku. Tonos verdes con reflejos cobrizos y craquelado. Perfecta como florero o como objeto decorativo.",
+    foto: "fotos/florero-verde.jpg",
+    destacado: true,
     agotado: false
   },
   {
     id: 3,
-    nombre: "Virgen de cerámica pintada a mano",
-    categoria: "religioso",
-    precio: 14200,
-    descripcion: "Figura religiosa modelada y pintada artesanalmente. Alto 20 cm.",
-    foto: "",
-    destacado: true,
-    agotado: false
-  },
-  {
-    id: 4,
-    nombre: "Ángel de la guarda en cerámica",
-    categoria: "religioso",
-    precio: 9600,
-    descripcion: "Pieza delicada ideal para regalo de bautismo o comunión.",
-    foto: "",
-    destacado: false,
-    agotado: false
-  },
-  {
-    id: 5,
-    nombre: "Mazo de cartas – Santos y Vírgenes",
-    categoria: "mazos",
-    precio: 11900,
-    descripcion: "Mazo temático religioso ilustrado. 52 cartas con imágenes y oraciones. Edición limitada.",
-    foto: "",
-    destacado: true,
-    agotado: false
-  },
-  {
-    id: 6,
-    nombre: "Mazo de cartas – Arcángeles",
-    categoria: "mazos",
-    precio: 11900,
-    descripcion: "Cartas ilustradas de los arcángeles, con guía de uso incluida.",
-    foto: "",
-    destacado: false,
-    agotado: false
-  },
-  {
-    id: 7,
-    nombre: "Cuadro botánico enmarcado",
-    categoria: "cuadros",
-    precio: 22000,
-    descripcion: "Lámina de impresión botánica con marco de madera natural. 30 x 40 cm.",
-    foto: "",
-    destacado: false,
-    agotado: false
-  },
-  {
-    id: 8,
-    nombre: "Cuadro religioso – Sagrado Corazón",
-    categoria: "cuadros",
-    precio: 19500,
-    descripcion: "Reproducción artística enmarcada. Ideal para living o dormitorio.",
-    foto: "",
-    destacado: false,
-    agotado: false
-  },
-  {
-    id: 9,
-    nombre: "Tela de impresión botánica – Helechos",
-    categoria: "telas",
-    precio: 8400,
-    descripcion: "Tela 100% algodón con estampa botánica natural. 50 x 70 cm. Para cuadros, almohadones o decoración.",
-    foto: "",
-    destacado: true,
-    agotado: false
-  },
-  {
-    id: 10,
-    nombre: "Tela de impresión botánica – Flores secas",
-    categoria: "telas",
-    precio: 8400,
-    descripcion: "Estampado artesanal con flores prensadas. Pieza irrepetible.",
-    foto: "",
-    destacado: false,
-    agotado: true
-  },
-  {
-    id: 11,
-    nombre: "Portavelas de cerámica",
-    categoria: "otros",
-    precio: 5600,
-    descripcion: "Set de 2 portavelas artesanales en tonos neutros.",
-    foto: "",
-    destacado: false,
-    agotado: false
-  },
-  {
-    id: 12,
-    nombre: "Rosario artesanal",
-    categoria: "otros",
-    precio: 6900,
-    descripcion: "Rosario hecho a mano con cuentas de cerámica.",
-    foto: "",
+    nombre: "Vasija decorativa de cerámica — crema",
+    categoria: "ceramica",
+    precio: 0,
+    descripcion: "Forma orgánica modelada a mano en tono crema natural. Objeto decorativo artesanal, pieza única.",
+    foto: "fotos/vasija-crema.jpg",
     destacado: false,
     agotado: false
   },
