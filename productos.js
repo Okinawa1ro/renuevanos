@@ -79,13 +79,11 @@ const CATEGORIAS = [
 
 const PRODUCTOS = [
 
-  // ⚠️ PRECIOS PROVISORIOS: cambiá el número de "precio" por el valor real de cada pieza.
-
   {
     id: 1,
     nombre: "Florero de cerámica raku — blanco craquelado",
     categoria: "ceramica",
-    precio: 0,
+    precio: 60000,
     descripcion: "Pieza única hecha a mano con técnica raku. Acabado blanco con craquelado natural: cada grieta es irrepetible. Ideal como florero o pieza decorativa.",
     foto: "fotos/florero-blanco.jpg",
     destacado: true,
@@ -95,7 +93,7 @@ const PRODUCTOS = [
     id: 2,
     nombre: "Florero de cerámica raku — verde y cobre",
     categoria: "ceramica",
-    precio: 0,
+    precio: 75000,
     descripcion: "Pieza única realizada con técnica raku. Tonos verdes con reflejos cobrizos y craquelado. Perfecta como florero o como objeto decorativo.",
     foto: "fotos/florero-verde.jpg",
     destacado: true,
@@ -105,7 +103,7 @@ const PRODUCTOS = [
     id: 3,
     nombre: "Vasija decorativa de cerámica — crema",
     categoria: "ceramica",
-    precio: 0,
+    precio: 85000,
     descripcion: "Forma orgánica modelada a mano en tono crema natural. Objeto decorativo artesanal, pieza única.",
     foto: "fotos/vasija-crema.jpg",
     destacado: false,
