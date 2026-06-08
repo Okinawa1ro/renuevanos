@@ -204,6 +204,14 @@ header{
 footer{border-top:1px solid var(--line);padding:34px 20px 44px;text-align:center;color:var(--soft);font-size:14px;}
 footer a{color:var(--clay-dk);font-weight:700;text-decoration:none;}
 footer .fbrand{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--clay-dk);font-weight:700;margin-bottom:6px;}
+footer .privacy{max-width:560px;margin:18px auto 0;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+footer .privacy summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;color:var(--clay-dk);text-align:center;font-size:15px;}
+footer .privacy summary::-webkit-details-marker{display:none;}
+footer .privacy[open] summary{border-bottom:1px solid var(--line);}
+footer .privacy-body{padding:16px 18px;font-size:14px;line-height:1.6;color:var(--soft);}
+footer .privacy-body b{color:var(--ink);}
+footer .privacy-body ul{margin:8px 0 0;padding-left:18px;}
+footer .privacy-body li{margin-bottom:6px;}
 </style>
 </head>
 <body>
@@ -237,6 +245,10 @@ footer .fbrand{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(-
 <footer>
   <div class="fbrand" id="footBrand">Tienda</div>
   <div id="footContact"></div>
+  <details class="privacy">
+    <summary>🔒 Política de privacidad</summary>
+    <div class="privacy-body" id="privacyBody"></div>
+  </details>
   <div style="margin-top:14px;font-size:13px;opacity:.8;">Hecho con cariño · Compra fácil y segura</div>
 </footer>
 
@@ -302,6 +314,18 @@ function init(){
   if(CONFIG.whatsapp) fc.push(`<a href="https://wa.me/${CONFIG.whatsapp}" target="_blank">💬 Escribinos por WhatsApp</a>`);
   if(CONFIG.instagram) fc.push(`<a href="${CONFIG.instagram}" target="_blank">📷 Instagram</a>`);
   document.getElementById("footContact").innerHTML = fc.join(" &nbsp;·&nbsp; ");
+
+  // política de privacidad
+  const waContacto = CONFIG.whatsapp ? `<a href="https://wa.me/${encodeURIComponent(CONFIG.whatsapp)}" target="_blank">WhatsApp</a>` : "WhatsApp";
+  document.getElementById("privacyBody").innerHTML = `
+    <p>En <b>${escapeHtml(CONFIG.nombre)}</b> cuidamos tu información. Solo te pedimos tu
+    <b>nombre, teléfono y dirección</b> con un único fin: <b>coordinar y enviar tu pedido</b>.</p>
+    <ul>
+      <li><b>No guardamos tus datos</b> en ningún servidor ni base de datos: viajan directamente a nuestro ${waContacto}.</li>
+      <li><b>No compartimos ni vendemos</b> tu información a terceros.</li>
+      <li>Los <b>pagos con tarjeta</b> se procesan de forma segura a través de <b>Mercado Pago</b>; los datos de tu tarjeta nunca pasan por este sitio.</li>
+      <li>Podés pedirnos en cualquier momento que <b>borremos tu información</b> escribiéndonos por ${waContacto}.</li>
+    </ul>`;
 
   renderCats();
   renderGrid();
