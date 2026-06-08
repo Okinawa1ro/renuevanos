@@ -45,8 +45,10 @@ header{
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
 }
 .hbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 20px;max-width:1100px;margin:0 auto;}
-.brand{display:flex;flex-direction:column;line-height:1.05;cursor:pointer;}
-.brand b{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:27px;color:var(--clay-dk);letter-spacing:.3px;}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.brand-logo{width:42px;height:42px;flex-shrink:0;}
+.brand-text{display:flex;flex-direction:column;line-height:1.05;}
+.brand b{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:var(--clay-dk);letter-spacing:.3px;}
 .brand span{font-size:12px;color:var(--soft);letter-spacing:.5px;}
 .cart-btn{
   display:flex;align-items:center;gap:8px;background:var(--clay);color:#fff;
@@ -233,8 +235,11 @@ footer .privacy-body li{margin-bottom:6px;}
 <header>
   <div class="hbar">
     <div class="brand" onclick="scrollTop()">
-      <b id="brandName">Tienda</b>
-      <span id="brandSlogan"></span>
+      <img class="brand-logo" src="logo-mini.png" alt="">
+      <div class="brand-text">
+        <b id="brandName">Tienda</b>
+        <span id="brandSlogan"></span>
+      </div>
     </div>
     <button class="cart-btn" onclick="openCart()" aria-label="Ver carrito">
       🛒 Carrito <span class="count" id="cartCount">0</span>
