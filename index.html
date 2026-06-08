@@ -190,6 +190,18 @@ header{
 .field textarea{resize:vertical;min-height:64px;}
 .pay-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin:22px 0 6px;}
 .pay-sub{color:var(--soft);font-size:14px;margin-bottom:14px;}
+.ship-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.ship-opt{display:flex;align-items:center;gap:10px;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;transition:.15s;}
+.ship-opt.on{border-color:var(--clay);background:rgba(111,127,90,.08);}
+.ship-opt input{width:20px;height:20px;accent-color:var(--clay);flex-shrink:0;}
+.ship-opt .ship-name{flex:1;font-weight:700;font-size:15px;}
+.ship-opt .ship-cost{font-weight:800;color:var(--clay-dk);white-space:nowrap;}
+.totbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:6px;}
+.totline{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:15px;color:var(--soft);}
+.totline.grand{border-top:1px solid var(--line);margin-top:6px;padding-top:10px;}
+.totline.grand span:first-child{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ink);}
+.totline.grand span:last-child{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--clay-dk);}
+.totline.grand small{font-size:13px;color:var(--soft);font-family:'Nunito',sans-serif;font-weight:600;}
 .note{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;font-size:15px;color:var(--soft);margin-top:14px;line-height:1.55;}
 .note b{color:var(--ink);}
 .note .copy{margin-top:6px;display:inline-block;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-weight:800;color:var(--clay-dk);font-size:15px;}
@@ -290,6 +302,7 @@ footer .privacy-body li{margin-bottom:6px;}
 /* ============================ ESTADO ============================ */
 let cart = {};           // { idProducto: cantidad }
 let activeCat = "todos";
+let selectedShip = 0;    // opción de envío elegida en el checkout
 
 try { cart = JSON.parse(localStorage.getItem("cart")||"{}"); } catch(e){ cart = {}; }
 
@@ -448,8 +461,40 @@ function renderCart(){
 }
 
 /* ============================ CHECKOUT ============================ */
+/* ── Envíos ── */
+function shipOptions(){
+  return (CONFIG.envios && CONFIG.envios.length) ? CONFIG.envios
+       : [{ nombre:"A coordinar por WhatsApp", costo:null }];
+}
+function shipSel(){ return shipOptions()[selectedShip] || shipOptions()[0]; }
+function shipIsTBD(){ const o=shipSel(); return !o || o.costo==null; }
+function shipCost(){ const o=shipSel(); return (o && typeof o.costo==="number") ? o.costo : 0; }
+function grandTotal(){ return cartTotal() + shipCost(); }
+function setShip(i){ selectedShip = i; renderShipBlock(); }
+
+function renderShipBlock(){
+  const opts = shipOptions().map((o,i)=>{
+    const costo = o.costo==null ? "a coordinar" : (o.costo===0 ? "sin cargo" : money(o.costo));
+    return `<label class="ship-opt ${i===selectedShip?'on':''}">
+      <input type="radio" name="ship" ${i===selectedShip?'checked':''} onchange="setShip(${i})">
+      <span class="ship-name">${escapeHtml(o.nombre)}</span>
+      <span class="ship-cost">${costo}</span>
+    </label>`;
+  }).join("");
+  const totalTxt = shipIsTBD() ? `${money(cartTotal())} <small>+ envío</small>` : money(grandTotal());
+  document.getElementById("shipBlock").innerHTML = `
+    <div class="pay-title" style="margin-top:0;">Envío</div>
+    <div class="ship-opts">${opts}</div>
+    <div class="totbox">
+      <div class="totline"><span>Productos</span><span>${money(cartTotal())}</span></div>
+      <div class="totline"><span>Envío</span><span>${shipIsTBD() ? "a coordinar" : money(shipCost())}</span></div>
+      <div class="totline grand"><span>Total</span><span>${totalTxt}</span></div>
+    </div>`;
+}
+
 function openCheckout(){
   if(!cartItems().length) return;
+  selectedShip = 0;
   const hasMP = !!(CONFIG.mercadoPagoLink && CONFIG.mercadoPagoLink.trim());
   const hasTransfer = !!(CONFIG.transferencia && CONFIG.transferencia.alias && CONFIG.transferencia.alias.trim() && CONFIG.transferencia.alias!=="TU.ALIAS.MP");
 
@@ -459,8 +504,8 @@ function openCheckout(){
   if(hasTransfer) pays += `<button class="btn btn-ghost" onclick="finish('transfer')">🏦 Pagar por transferencia</button>`;
 
   document.getElementById("checkoutBody").innerHTML = `
-    <div class="totrow"><span class="lbl">Total a pagar</span><span class="val">${money(cartTotal())}</span></div>
-    <p class="pay-sub">Completá tus datos para coordinar el envío.</p>
+    <div id="shipBlock"></div>
+    <p class="pay-sub">Completá tus datos para el envío.</p>
     <div class="field"><label>Tu nombre y apellido *</label><input id="ckNombre" type="text" placeholder="Ej: María González" autocomplete="name"></div>
     <div class="field"><label>Tu teléfono / WhatsApp *</label><input id="ckTel" type="tel" placeholder="Ej: 11 2233 4455" autocomplete="tel"></div>
     <div class="field"><label>Dirección y localidad de envío</label><input id="ckDir" type="text" placeholder="Calle, número, ciudad, provincia" autocomplete="street-address"></div>
@@ -471,6 +516,7 @@ function openCheckout(){
     ${pays}
     <div id="ckExtra"></div>
   `;
+  renderShipBlock();
   document.getElementById("cartPanel").classList.remove("show");
   document.getElementById("overlay").classList.add("show");
   document.getElementById("checkoutPanel").classList.add("show");
@@ -486,7 +532,12 @@ function buildOrderText(){
   };
   let t = `*Nuevo pedido — ${CONFIG.nombre}*\n\n`;
   items.forEach(({p,q})=>{ t += `• ${q} x ${p.nombre} — ${money(p.precio*q)}\n`; });
-  t += `\n*Total: ${money(cartTotal())}*\n\n`;
+  const o = shipSel();
+  t += `\nProductos: ${money(cartTotal())}\n`;
+  t += `Envío (${o.nombre}): ${shipIsTBD() ? "a coordinar" : money(shipCost())}\n`;
+  t += shipIsTBD()
+     ? `*Total: ${money(cartTotal())} + envío a coordinar*\n\n`
+     : `*Total: ${money(grandTotal())}*\n\n`;
   if(datos.nombre) t += `👤 ${datos.nombre}\n`;
   if(datos.tel)    t += `📞 ${datos.tel}\n`;
   if(datos.dir)    t += `📍 ${datos.dir}\n`;
@@ -536,7 +587,7 @@ function finish(method){
         Alias: <span class="copy">${tr.alias}</span><br>
         ${tr.cbu ? `CBU/CVU: <span class="copy">${tr.cbu}</span><br>`:""}
         ${tr.titular ? `Titular: <b>${tr.titular}</b><br>`:""}
-        Monto: <span class="copy">${money(cartTotal())}</span><br><br>
+        Monto: <span class="copy">${shipIsTBD() ? money(cartTotal())+" + envío (a coordinar)" : money(grandTotal())}</span><br><br>
         Cuando hagas la transferencia, mandanos el comprobante por WhatsApp y coordinamos el envío.<br><br>
         <a class="btn btn-wa" href="${waLink(t + '\n\n(Pago por transferencia)')}" target="_blank" style="margin-top:4px;">💬 Enviar comprobante por WhatsApp</a>
       </div>`;

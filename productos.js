@@ -34,7 +34,19 @@ const CONFIG = {
   },
 
   // ── Envíos ──────────────────────────────────────────────────────────
-  envioTexto:  "Envíos a todo el país. Coordinamos el costo por WhatsApp.",
+  // Frase que aparece arriba, en la portada.
+  envioTexto:  "Envíos a todo el país. Elegí el costo al finalizar la compra.",
+
+  // Opciones de envío: el cliente elige una al pagar y se SUMA al total.
+  //   costo: poné el número (ej: 5000). Usá 0 para "sin cargo".
+  //   costo: null  → "a coordinar" (no suma monto; lo arreglás por WhatsApp).
+  // ⚠️ Los montos de abajo son EJEMPLOS: cambialos por tus precios reales.
+  envios: [
+    { nombre: "Retiro en persona",            costo: 0 },
+    { nombre: "Envío dentro de tu ciudad",    costo: 5000 },
+    { nombre: "Envío al resto del país",      costo: 9000 },
+    { nombre: "A coordinar por WhatsApp",     costo: null },
+  ],
 
   // ── Redes / contacto (opcional, dejá "" para ocultar) ───────────────
   instagram:   "",   // Ej: "https://instagram.com/tu_taller"
