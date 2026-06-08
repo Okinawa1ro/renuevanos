@@ -40,12 +40,13 @@ const CONFIG = {
   // Opciones de envío: el cliente elige una al pagar y se SUMA al total.
   //   costo: poné el número (ej: 5000). Usá 0 para "sin cargo".
   //   costo: null  → "a coordinar" (no suma monto; lo arreglás por WhatsApp).
-  // ⚠️ Los montos de abajo son EJEMPLOS: cambialos por tus precios reales.
   envios: [
-    { nombre: "Retiro en persona",            costo: 0 },
-    { nombre: "Envío dentro de tu ciudad",    costo: 5000 },
-    { nombre: "Envío al resto del país",      costo: 9000 },
-    { nombre: "A coordinar por WhatsApp",     costo: null },
+    { nombre: "Retiro en persona",                  costo: 0 },
+    { nombre: "Tigre y alrededores",                costo: 5000 },
+    { nombre: "Capital Federal",                    costo: 6000 },
+    { nombre: "San Isidro",                         costo: 6000 },
+    { nombre: "Pilar",                              costo: 7000 },
+    { nombre: "Otras zonas (cotizar por WhatsApp)", costo: null },
   ],
 
   // ── Redes / contacto (opcional, dejá "" para ocultar) ───────────────
