@@ -273,7 +273,7 @@ footer .privacy-body li{margin-bottom:6px;}
     <h1 id="heroTitle" class="sr-only">Tienda</h1>
     <p id="heroText" class="sr-only"></p>
     <div class="ship" id="shipBox">🚚 <span id="shipText"></span></div>
-    <p class="iva-note">Todos los precios son finales — IVA incluido</p>
+    <p class="iva-note">Todos los precios publicados son finales</p>
   </section>
 
   <div class="cats" id="cats"></div>
@@ -423,7 +423,7 @@ function openProduct(id){
       <h2>${escapeHtml(p.nombre)}</h2>
       ${badge}
       <div class="sheet-price">${money(p.precio)}</div>
-      <div class="iva-tag">Precio final — IVA incluido</div>
+      <div class="iva-tag">Precio final</div>
       <p class="sheet-desc">${escapeHtml(p.descripcion||"")}</p>
       <div class="prod-legal">
         <div>📦 <b>Entrega estimada:</b> ${escapeHtml(legalInfo("plazoEntrega"))}</div>
