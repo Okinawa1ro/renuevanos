@@ -66,7 +66,7 @@
         <a href="boton-de-arrepentimiento.html">Botón de Arrepentimiento</a>
       </nav>
       <div class="legal-iva">
-        Todos los precios son finales, en pesos argentinos, con IVA incluido.<br>
+        Todos los precios publicados son finales, en pesos argentinos.<br>
         Compra protegida por la Ley 24.240 de Defensa del Consumidor.
       </div>`;
   }
