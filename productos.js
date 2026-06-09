@@ -58,10 +58,10 @@ const CONFIG = {
   // las páginas legales. ⚠️ Completá los que dicen "" — son obligatorios.
   legal: {
     titular:      "María Regina Petazzi",   // Nombre y apellido de la titular
-    cuit:         "",   // ⚠️ COMPLETAR — CUIT / CUIL de la titular
-    domicilio:    "",   // ⚠️ COMPLETAR — domicilio legal (calle, número)
-    localidad:    "Ciudad Autónoma de Buenos Aires",
-    email:        "",   // ⚠️ COMPLETAR — email de contacto
+    cuit:         "27-18284811-0",   // CUIT / CUIL de la titular
+    domicilio:    "Corredor Bancalari 3901, Troncos del Talar",   // domicilio legal
+    localidad:    "Provincia de Buenos Aires",
+    email:        "info.renuevanos@gmail.com",   // email de contacto
     // Plazo de entrega estimado (se muestra en cada producto y en T&C).
     plazoEntrega: "Entre 3 y 10 días hábiles según la zona de envío.",
     // Garantía legal mínima (Art. 11, Ley 24.240).
