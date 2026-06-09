@@ -23,7 +23,7 @@ const CONFIG = {
   // Pegá acá tu "Link de pago" de Mercado Pago (opcional).
   // Cómo crearlo: entrá a Mercado Pago → "Cobrar" → "Link de pago".
   // Si lo dejás vacío (""), el botón de tarjeta no aparece.
-  mercadoPagoLink: "",
+  mercadoPagoLink: "https://link.mercadopago.com.ar/renuevanos",
 
   // ── Transferencia bancaria (opcional) ───────────────────────────────
   // Si no querés ofrecer transferencia, dejá el alias vacío ("").
