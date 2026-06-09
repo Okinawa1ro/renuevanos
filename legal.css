@@ -1,0 +1,55 @@
+/* ==========================================================================
+   Estilos compartidos: pie legal del sitio + páginas legales
+   (Usa la misma paleta verde oliva / crema de la tienda)
+   ========================================================================== */
+:root{
+  --bg:#f6f1e4; --surface:#fffdf7; --ink:#2c302a; --soft:#7a7c6e;
+  --line:#e6e1d0; --clay:#6f7f5a; --clay-dk:#54643f; --gold:#c2a662;
+  --r:16px; --shadow:0 6px 24px rgba(60,40,20,.08);
+}
+
+/* ── Pie legal (aparece en todas las páginas) ── */
+.pie-legal{max-width:760px;margin:18px auto 0;text-align:left;}
+.pie-legal .legal-datos{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:13px;line-height:1.7;color:var(--soft);}
+.pie-legal .legal-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--clay-dk);margin-bottom:6px;}
+.pie-legal .legal-datos b{color:var(--ink);}
+.pie-legal .legal-datos a{color:var(--clay-dk);font-weight:700;text-decoration:none;}
+.pie-legal .pend{color:#b06a2c;font-style:italic;}
+.pie-legal .legal-links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;margin:16px 0 10px;}
+.pie-legal .legal-links a{color:var(--clay-dk);font-weight:700;text-decoration:none;font-size:14px;}
+.pie-legal .legal-links a:hover{text-decoration:underline;}
+.pie-legal .legal-iva{text-align:center;font-size:12px;color:var(--soft);line-height:1.6;}
+
+/* ── Páginas legales (T&C, privacidad, arrepentimiento) ── */
+body.legal{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;font-size:17px;line-height:1.6;margin:0;-webkit-text-size-adjust:100%;}
+.legal-header{position:sticky;top:0;z-index:10;background:rgba(246,241,228,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.legal-header .inner{max-width:760px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:12px;}
+.legal-header img{width:38px;height:38px;}
+.legal-header a.home{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--clay-dk);font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;}
+.legal-header .back{margin-left:auto;font-size:14px;font-weight:700;color:var(--clay-dk);text-decoration:none;background:var(--surface);border:1px solid var(--line);padding:9px 16px;border-radius:50px;}
+.legal-page{max-width:760px;margin:0 auto;padding:26px 22px 50px;}
+.legal-page h1{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,6vw,42px);font-weight:700;color:var(--ink);line-height:1.1;margin:0 0 6px;}
+.legal-page .updated{color:var(--soft);font-size:14px;margin-bottom:26px;}
+.legal-page h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--clay-dk);margin:28px 0 8px;}
+.legal-page p{margin:0 0 12px;}
+.legal-page ul{margin:0 0 12px;padding-left:22px;}
+.legal-page li{margin-bottom:7px;}
+.legal-page a{color:var(--clay-dk);font-weight:700;}
+.legal-page .lead{font-size:18px;color:var(--soft);margin-bottom:22px;}
+.legal-page .callout{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--clay);border-radius:12px;padding:16px 18px;margin:18px 0;}
+.legal-page .callout b{color:var(--ink);}
+.legal-page .lawref{font-size:13px;color:var(--soft);font-style:italic;}
+
+/* Botones reutilizables en páginas legales */
+.lbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 22px;border-radius:14px;font-size:16px;font-weight:800;text-decoration:none;border:none;cursor:pointer;font-family:inherit;width:100%;box-sizing:border-box;}
+.lbtn-wa{background:#25d366;color:#fff;}
+.lbtn-mail{background:var(--clay);color:#fff;}
+.lbtn-ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line);}
+.lbtn + .lbtn{margin-top:10px;}
+
+/* Formulario (página de arrepentimiento) */
+.lfield{margin-bottom:14px;}
+.lfield label{display:block;font-weight:700;font-size:15px;margin-bottom:6px;}
+.lfield input,.lfield textarea{width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:16px;background:var(--surface);color:var(--ink);box-sizing:border-box;}
+.lfield input:focus,.lfield textarea:focus{outline:none;border-color:var(--clay);}
+.lfield textarea{resize:vertical;min-height:70px;}
