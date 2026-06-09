@@ -30,6 +30,36 @@ aparecen. El pedido por WhatsApp funciona siempre.
 
 ---
 
+## ⚖️ Datos legales (OBLIGATORIO completar)
+
+Por la Ley 24.240 de Defensa del Consumidor, una tienda online debe mostrar los
+datos del vendedor. En `productos.js`, dentro del bloque **`legal:`**, completá:
+
+```js
+legal: {
+  titular:   "María Regina Petazzi",  // ya cargado
+  cuit:      "",   // ⚠️ poné tu CUIT/CUIL
+  domicilio: "",   // ⚠️ poné tu domicilio legal (calle y número)
+  email:     "",   // ⚠️ poné tu email de contacto
+  ...
+},
+```
+
+Estos datos aparecen automáticamente en el pie del sitio y en las páginas
+legales. Mientras estén vacíos, se muestran como **"a completar"**.
+
+La tienda ya incluye estas páginas legales (no hace falta editarlas):
+
+- `terminos-y-condiciones.html` — Términos y Condiciones
+- `politica-de-privacidad.html` — Política de Privacidad (Ley 25.326)
+- `boton-de-arrepentimiento.html` — Botón de Arrepentimiento (10 días, Ley 24.240)
+
+> Importante: estas páginas son **modelos** preparados para un emprendimiento de
+> cerámica artesanal. Antes de publicar, conviene que un profesional las revise
+> según tu situación impositiva (monotributo, etc.).
+
+---
+
 ## 🛒 ¿Cómo agregar o cambiar productos?
 
 Todo en `productos.js`, en la lista de **PRODUCTOS**. Cada producto es un
@@ -90,6 +120,10 @@ También funciona en Netlify (arrastrás la carpeta y listo) o cualquier hosting
 | `productos.js` | **Acá editás todo:** datos, pagos y productos. |
 | `manifest.json` | Para que se pueda "instalar" como app en el celular. |
 | `icon-512.png` | El ícono de la app. Podés reemplazarlo por tu logo. |
+| `terminos-y-condiciones.html` | Página de Términos y Condiciones. |
+| `politica-de-privacidad.html` | Página de Política de Privacidad. |
+| `boton-de-arrepentimiento.html` | Página del Botón de Arrepentimiento. |
+| `legal.css` / `pie-legal.js` | Estilos y datos del pie legal (no hace falta tocar). |
 
 ---
 

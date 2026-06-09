@@ -51,6 +51,22 @@ const CONFIG = {
 
   // ── Redes / contacto (opcional, dejá "" para ocultar) ───────────────
   instagram:   "",   // Ej: "https://instagram.com/tu_taller"
+
+  // ── Datos legales del vendedor ──────────────────────────────────────
+  // Obligatorios para vender online (Ley 24.240 de Defensa del Consumidor
+  // y Ley 25.326 de Datos Personales). Aparecen en el pie del sitio y en
+  // las páginas legales. ⚠️ Completá los que dicen "" — son obligatorios.
+  legal: {
+    titular:      "María Regina Petazzi",   // Nombre y apellido de la titular
+    cuit:         "",   // ⚠️ COMPLETAR — CUIT / CUIL de la titular
+    domicilio:    "",   // ⚠️ COMPLETAR — domicilio legal (calle, número)
+    localidad:    "Ciudad Autónoma de Buenos Aires",
+    email:        "",   // ⚠️ COMPLETAR — email de contacto
+    // Plazo de entrega estimado (se muestra en cada producto y en T&C).
+    plazoEntrega: "Entre 3 y 10 días hábiles según la zona de envío.",
+    // Garantía legal mínima (Art. 11, Ley 24.240).
+    garantiaMeses: 6,
+  },
 };
 
 

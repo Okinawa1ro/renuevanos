@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6f7f5a">
+<title>Botón de Arrepentimiento — Proyecto ReNuevaNos</title>
+<link rel="icon" href="icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body class="legal">
+
+<header class="legal-header">
+  <div class="inner">
+    <a class="home" href="index.html"><img src="logo-mini.png" alt=""> Proyecto ReNuevaNos</a>
+    <a class="back" href="index.html">← Volver a la tienda</a>
+  </div>
+</header>
+
+<main class="legal-page">
+  <h1>Botón de Arrepentimiento</h1>
+  <p class="updated">Tu derecho como consumidor — Ley 24.240</p>
+
+  <div class="callout">
+    <p><b>Tenés derecho a arrepentirte de tu compra.</b> Contás con <b>10 días corridos</b>
+    desde que recibís el producto para revocar la operación, <b>sin necesidad de dar
+    explicaciones y sin ningún costo ni penalidad</b> para vos.</p>
+    <p class="lawref">Art. 34, Ley 24.240 de Defensa del Consumidor y Resolución 424/2020.</p>
+  </div>
+
+  <h2>¿Cómo funciona?</h2>
+  <ul>
+    <li>Completá el formulario de abajo (o escribinos directo por WhatsApp/email).</li>
+    <li>La pieza debe estar <b>sin uso</b> y en las mismas condiciones en que la recibiste.</li>
+    <li>Coordinamos juntos la devolución del producto.</li>
+    <li>Te <b>reintegramos el importe</b> abonado.</li>
+  </ul>
+
+  <h2>Iniciar mi solicitud</h2>
+  <p>Dejanos estos datos y elegí cómo enviarlos:</p>
+
+  <div class="lfield"><label>Tu nombre y apellido</label><input id="aNombre" type="text" placeholder="Ej: María González"></div>
+  <div class="lfield"><label>Número de orden (si lo tenés)</label><input id="aOrden" type="text" placeholder="Ej: RN-260610-1234"></div>
+  <div class="lfield"><label>Tu email o teléfono de contacto</label><input id="aContacto" type="text" placeholder="Para poder responderte"></div>
+  <div class="lfield"><label>Comentario (opcional)</label><textarea id="aMotivo" placeholder="No es obligatorio dar el motivo"></textarea></div>
+
+  <button class="lbtn lbtn-wa" onclick="enviar('wa')">💬 Enviar por WhatsApp</button>
+  <button class="lbtn lbtn-mail" onclick="enviar('mail')">✉️ Enviar por email</button>
+  <a class="lbtn lbtn-ghost" href="terminos-y-condiciones.html">Ver Términos y Condiciones</a>
+
+</main>
+
+<footer style="border-top:1px solid var(--line);padding:24px 22px 46px;margin-top:24px;">
+  <div class="pie-legal" id="pie-legal"></div>
+</footer>
+
+<script src="productos.js"></script>
+<script src="pie-legal.js"></script>
+<script>
+function val(id){ var e=document.getElementById(id); return e ? e.value.trim() : ""; }
+function armarTexto(){
+  var nombre = val("aNombre"), orden = val("aOrden"), contacto = val("aContacto"), motivo = val("aMotivo");
+  var t = "Solicitud de arrepentimiento (Ley 24.240)\n\n";
+  if(nombre)   t += "Nombre: " + nombre + "\n";
+  if(orden)    t += "Nº de orden: " + orden + "\n";
+  if(contacto) t += "Contacto: " + contacto + "\n";
+  if(motivo)   t += "Comentario: " + motivo + "\n";
+  t += "\nDeseo ejercer mi derecho de arrepentimiento dentro de los 10 días de recibido el producto.";
+  return t;
+}
+function enviar(via){
+  var nombre = val("aNombre"), contacto = val("aContacto");
+  if(!nombre || !contacto){
+    alert("Por favor completá tu nombre y un dato de contacto (email o teléfono).");
+    return;
+  }
+  var t = armarTexto();
+  if(via==="wa"){
+    var wa = (typeof CONFIG!=="undefined" && CONFIG.whatsapp) ? CONFIG.whatsapp : "";
+    if(!wa){ alert("WhatsApp no está configurado. Escribinos por email."); return; }
+    window.open("https://wa.me/" + encodeURIComponent(wa) + "?text=" + encodeURIComponent(t), "_blank");
+  } else {
+    var email = (typeof legalValue==="function") ? legalValue("email", true) : "";
+    if(!email){ alert("El email de contacto todavía no está configurado. Usá WhatsApp."); return; }
+    window.location.href = "mailto:" + encodeURIComponent(email)
+      + "?subject=" + encodeURIComponent("Solicitud de arrepentimiento")
+      + "&body=" + encodeURIComponent(t);
+  }
+}
+</script>
+</body>
+</html>

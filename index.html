@@ -8,6 +8,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="legal.css">
 <style>
 :root{
   --bg:#f6f1e4;        /* fondo crema cálido */
@@ -68,6 +69,7 @@ header{
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,7vw,56px);font-weight:700;color:var(--ink);line-height:1.05;}
 .hero p{color:var(--soft);font-size:18px;margin-top:12px;max-width:560px;margin-left:auto;margin-right:auto;}
 .hero .ship{display:inline-flex;align-items:center;gap:8px;margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:50px;padding:9px 18px;font-size:14px;color:var(--sage);font-weight:700;box-shadow:var(--shadow);}
+.hero .iva-note{margin-top:12px;font-size:13px;color:var(--soft);font-weight:600;}
 
 /* ── CATEGORÍAS ── */
 .cats{display:flex;gap:10px;overflow-x:auto;padding:4px 20px 18px;scrollbar-width:none;max-width:1100px;margin:0 auto;}
@@ -181,7 +183,23 @@ header{
 .sheet-body .card-cat{font-size:12px;}
 .sheet-body h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;margin:6px 0 4px;line-height:1.1;}
 .sheet-price{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--clay-dk);margin:8px 0 14px;}
-.sheet-desc{color:var(--soft);font-size:16px;line-height:1.6;margin-bottom:22px;}
+.sheet-desc{color:var(--soft);font-size:16px;line-height:1.6;margin-bottom:18px;}
+.iva-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--sage);background:rgba(111,127,90,.1);border-radius:50px;padding:4px 12px;margin:-6px 0 14px;}
+.prod-legal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:14px;line-height:1.55;color:var(--soft);}
+.prod-legal>div{margin-bottom:7px;}
+.prod-legal>div:last-child{margin-bottom:0;}
+.prod-legal b{color:var(--ink);font-weight:700;}
+.prod-legal a{color:var(--clay-dk);font-weight:700;}
+/* Confirmación de compra */
+.confirm{text-align:center;padding:6px 0 4px;}
+.confirm-ic{width:64px;height:64px;border-radius:50%;background:var(--ok);color:#fff;font-size:36px;display:flex;align-items:center;justify-content:center;margin:6px auto 14px;}
+.confirm h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:6px;}
+.confirm p{color:var(--soft);font-size:15px;margin-bottom:14px;}
+.confirm-num{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:15px;margin-bottom:16px;}
+.confirm-num b{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--clay-dk);}
+.confirm .note{text-align:left;}
+.confirm-vendor{font-size:14px;color:var(--soft);margin:14px 0;line-height:1.6;}
+.confirm-vendor a{color:var(--clay-dk);font-weight:700;text-decoration:none;}
 
 /* ── CHECKOUT ── */
 .field{margin-bottom:14px;}
@@ -255,6 +273,7 @@ footer .privacy-body li{margin-bottom:6px;}
     <h1 id="heroTitle" class="sr-only">Tienda</h1>
     <p id="heroText" class="sr-only"></p>
     <div class="ship" id="shipBox">🚚 <span id="shipText"></span></div>
+    <p class="iva-note">Todos los precios son finales — IVA incluido</p>
   </section>
 
   <div class="cats" id="cats"></div>
@@ -267,11 +286,8 @@ footer .privacy-body li{margin-bottom:6px;}
 <footer>
   <div class="fbrand" id="footBrand">Tienda</div>
   <div id="footContact"></div>
-  <details class="privacy">
-    <summary>🔒 Política de privacidad</summary>
-    <div class="privacy-body" id="privacyBody"></div>
-  </details>
-  <div style="margin-top:14px;font-size:13px;opacity:.8;">Hecho con cariño · Compra fácil y segura</div>
+  <div class="pie-legal" id="pie-legal"></div>
+  <div style="margin-top:18px;font-size:13px;opacity:.8;">Hecho con cariño · Compra fácil y segura</div>
 </footer>
 
 <!-- Overlay -->
@@ -305,6 +321,7 @@ footer .privacy-body li{margin-bottom:6px;}
 <div class="toast" id="toast"></div>
 
 <script src="productos.js"></script>
+<script src="pie-legal.js"></script>
 <script>
 /* ============================ ESTADO ============================ */
 let cart = {};           // { idProducto: cantidad }
@@ -320,6 +337,14 @@ const catEmoji = id => (CATEGORIAS.find(c=>c.id===id)||{}).emoji || "✨";
 
 /* Emoji de relleno cuando no hay foto */
 function placeholder(p){ return catEmoji(p.categoria); }
+
+/* Datos legales (con valores por defecto si faltan) */
+function legalInfo(key){
+  const l = CONFIG.legal || {};
+  if(key==="plazoEntrega")  return l.plazoEntrega || "Entre 3 y 10 días hábiles según la zona.";
+  if(key==="garantiaMeses") return (l.garantiaMeses!=null ? l.garantiaMeses : 6);
+  return l[key] || "";
+}
 
 /* ============================ INICIO ============================ */
 function init(){
@@ -337,17 +362,6 @@ function init(){
   if(CONFIG.whatsapp) fc.push(`<a href="https://wa.me/${CONFIG.whatsapp}" target="_blank">💬 Escribinos por WhatsApp</a>`);
   if(CONFIG.instagram) fc.push(`<a href="${CONFIG.instagram}" target="_blank">📷 Instagram</a>`);
   document.getElementById("footContact").innerHTML = fc.join(" &nbsp;·&nbsp; ");
-
-  // política de privacidad
-  const waContacto = CONFIG.whatsapp ? `<a href="https://wa.me/${encodeURIComponent(CONFIG.whatsapp)}" target="_blank">WhatsApp</a>` : "WhatsApp";
-  document.getElementById("privacyBody").innerHTML = `
-    <p>En <b>${escapeHtml(CONFIG.nombre)}</b> cuidamos tu información. Solo te pedimos tu
-    <b>nombre, teléfono y dirección</b> con un único fin: <b>coordinar y enviar tu pedido</b>.</p>
-    <ul>
-      <li><b>No guardamos tus datos</b> en ningún servidor ni base de datos: viajan directamente a nuestro ${waContacto}.</li>
-      <li><b>No compartimos ni vendemos</b> tu información a terceros.</li>
-      <li>Los <b>pagos con tarjeta</b> se procesan de forma segura a través de <b>Mercado Pago</b>; los datos de tu tarjeta nunca pasan por este sitio.</li>
-    </ul>`;
 
   renderCats();
   renderGrid();
@@ -409,7 +423,13 @@ function openProduct(id){
       <h2>${escapeHtml(p.nombre)}</h2>
       ${badge}
       <div class="sheet-price">${money(p.precio)}</div>
+      <div class="iva-tag">Precio final — IVA incluido</div>
       <p class="sheet-desc">${escapeHtml(p.descripcion||"")}</p>
+      <div class="prod-legal">
+        <div>📦 <b>Entrega estimada:</b> ${escapeHtml(legalInfo("plazoEntrega"))}</div>
+        <div>🔄 <b>Devoluciones:</b> tenés 10 días corridos desde que la recibís para arrepentirte, sin dar explicaciones. <a href="terminos-y-condiciones.html" target="_blank">Ver Términos</a></div>
+        <div>✅ <b>Garantía legal:</b> ${escapeHtml(String(legalInfo("garantiaMeses")))} meses por defectos de fabricación.</div>
+      </div>
       ${addBtn}
     </div>`;
   document.getElementById("overlay").classList.add("show");
@@ -528,7 +548,13 @@ function openCheckout(){
   document.getElementById("checkoutPanel").classList.add("show");
 }
 
-function buildOrderText(){
+function genOrderNum(){
+  const d = new Date(), p = n => String(n).padStart(2,"0");
+  const ymd = `${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}`;
+  return `RN-${ymd}-${Math.floor(1000 + Math.random()*9000)}`;
+}
+
+function buildOrderText(orderNum){
   const items = cartItems();
   const datos = {
     nombre: (document.getElementById("ckNombre")||{}).value || "",
@@ -536,7 +562,9 @@ function buildOrderText(){
     dir:    (document.getElementById("ckDir")||{}).value || "",
     nota:   (document.getElementById("ckNota")||{}).value || "",
   };
-  let t = `*Nuevo pedido — ${CONFIG.nombre}*\n\n`;
+  let t = `*Nuevo pedido — ${CONFIG.nombre}*\n`;
+  if(orderNum) t += `Orden Nº ${orderNum}\n`;
+  t += `\n`;
   items.forEach(({p,q})=>{ t += `• ${q} x ${p.nombre} — ${money(p.precio*q)}\n`; });
   const o = shipSel();
   t += `\nProductos: ${money(cartTotal())}\n`;
@@ -568,44 +596,76 @@ function finish(method){
     else document.getElementById("ckTel").focus();
     return;
   }
-  const {t} = buildOrderText();
+  const orderNum = genOrderNum();
+  const { t } = buildOrderText(orderNum);
 
   if(method==="whatsapp"){
     window.open(waLink(t), "_blank");
-    afterOrder("Te llevamos a WhatsApp para confirmar el pedido. ¡Gracias! 💛");
+    showConfirmation(orderNum, t);
   }
   else if(method==="mp"){
     // Abrimos el link de pago de Mercado Pago y mandamos el detalle por WhatsApp
     window.open(CONFIG.mercadoPagoLink, "_blank");
     document.getElementById("ckExtra").innerHTML = `
       <div class="note">
-        <b>Pago con tarjeta (Mercado Pago)</b><br>
+        <b>Pago con tarjeta (Mercado Pago)</b> — Orden Nº <b>${orderNum}</b><br>
         Se abrió la página de pago en otra pestaña. Una vez que pagues, avisanos por WhatsApp con el comprobante para coordinar el envío.<br><br>
         <a class="btn btn-wa" href="${waLink(t + '\n\n(Pago con tarjeta por Mercado Pago)')}" target="_blank" style="margin-top:4px;">💬 Avisar el pago por WhatsApp</a>
-      </div>`;
+      </div>
+      ${arrepentimientoNota()}`;
     document.getElementById("ckExtra").scrollIntoView({behavior:"smooth",block:"center"});
   }
   else if(method==="transfer"){
     const tr = CONFIG.transferencia;
     document.getElementById("ckExtra").innerHTML = `
       <div class="note">
-        <b>Datos para la transferencia</b><br><br>
+        <b>Datos para la transferencia</b> — Orden Nº <b>${orderNum}</b><br><br>
         Alias: <span class="copy">${tr.alias}</span><br>
         ${tr.cbu ? `CBU/CVU: <span class="copy">${tr.cbu}</span><br>`:""}
         ${tr.titular ? `Titular: <b>${tr.titular}</b><br>`:""}
         Monto: <span class="copy">${shipIsTBD() ? money(cartTotal())+" + envío (a coordinar)" : money(grandTotal())}</span><br><br>
         Cuando hagas la transferencia, mandanos el comprobante por WhatsApp y coordinamos el envío.<br><br>
         <a class="btn btn-wa" href="${waLink(t + '\n\n(Pago por transferencia)')}" target="_blank" style="margin-top:4px;">💬 Enviar comprobante por WhatsApp</a>
-      </div>`;
+      </div>
+      ${arrepentimientoNota()}`;
     document.getElementById("ckExtra").scrollIntoView({behavior:"smooth",block:"center"});
   }
 }
 
-function afterOrder(msg){
-  toast(msg);
-  // Vaciamos el carrito tras el pedido por WhatsApp
+/* Recordatorio del derecho de arrepentimiento (Ley 24.240) */
+function arrepentimientoNota(){
+  return `<div class="note" style="margin-top:10px;">
+    <b>Tu derecho de arrepentimiento:</b> tenés 10 días corridos desde que recibís el
+    producto para arrepentirte, sin dar explicaciones.
+    <a href="boton-de-arrepentimiento.html" target="_blank">Más información</a>.
+  </div>`;
+}
+
+/* Pantalla de confirmación de compra (Ley 24.240) */
+function showConfirmation(orderNum, t){
+  const email = legalInfo("email");
+  const wa = CONFIG.whatsapp ? `<a href="https://wa.me/${encodeURIComponent(CONFIG.whatsapp)}" target="_blank">WhatsApp</a>` : "";
+  const mail = email ? ` · <a href="mailto:${email}">${email}</a>` : "";
+  document.getElementById("checkoutBody").innerHTML = `
+    <div class="confirm">
+      <div class="confirm-ic">✓</div>
+      <h3>¡Gracias por tu pedido!</h3>
+      <p>Te abrimos WhatsApp para confirmarlo. Si no se abrió,
+         <a href="${waLink(t)}" target="_blank">tocá acá</a>.</p>
+      <div class="confirm-num">Tu número de orden:<br><b>${orderNum}</b></div>
+      ${arrepentimientoNota()}
+      <div class="confirm-vendor">
+        Vendedor: <b>${escapeHtml(legalInfo("titular") || CONFIG.nombre)}</b><br>
+        Contacto: ${wa}${mail}
+      </div>
+      <button class="btn btn-primary" onclick="finishDone()">Seguir comprando</button>
+    </div>`;
+  document.getElementById("checkoutBody").scrollTop = 0;
+}
+
+function finishDone(){
   cart = {}; saveCart(); updateCartCount();
-  setTimeout(()=>{ closeAll(); renderGrid(); }, 600);
+  closeAll(); renderGrid();
 }
 
 /* ============================ UI HELPERS ============================ */
