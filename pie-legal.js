@@ -41,8 +41,27 @@
 
   function pendOr(val){ return val ? esc(val) : '<span class="pend">a completar</span>'; }
 
+  // Inyecta (una sola vez) el estilo del pie legal colapsable.
+  function injectStyleOnce(){
+    if(document.getElementById("pie-legal-style")) return;
+    const s=document.createElement("style");
+    s.id="pie-legal-style";
+    s.textContent = ""
+      + ".legal-details{margin:0 auto 12px;max-width:560px;}"
+      + ".legal-details>summary{cursor:pointer;font-size:13px;opacity:.7;list-style:none;display:inline-flex;"
+      + "align-items:center;gap:6px;padding:6px 14px;border:1px solid currentColor;border-radius:50px;transition:opacity .15s;}"
+      + ".legal-details>summary:hover{opacity:.95;}"
+      + ".legal-details>summary::-webkit-details-marker{display:none;}"
+      + ".legal-details>summary::before{content:'🔒';}"
+      + ".legal-details[open]>summary{opacity:.9;margin-bottom:10px;}"
+      + ".legal-datos{font-size:13px;line-height:1.75;opacity:.85;text-align:left;display:inline-block;}"
+      + ".legal-datos .legal-title{font-weight:700;margin-bottom:4px;opacity:.9;}";
+    document.head.appendChild(s);
+  }
+
   function renderPieLegal(el){
     if(!el) return;
+    injectStyleOnce();
     const l=L();
     const wa = cfg("whatsapp");
     const waLink = wa ? `https://wa.me/${encodeURIComponent(wa)}` : "";
@@ -55,11 +74,17 @@
       wa ? `WhatsApp: <a href="${waLink}" target="_blank" rel="noopener">+${esc(wa)}</a>` : "",
     ].filter(Boolean).join("<br>");
 
+    // Los datos del vendedor van dentro de un <details> colapsado: hay que
+    // hacer clic en "Datos del vendedor" para verlos (siguen accesibles,
+    // como exige la Ley 24.240, pero no quedan expuestos a la vista).
     el.innerHTML = `
-      <div class="legal-datos">
-        <div class="legal-title">Datos del vendedor</div>
-        ${datos}
-      </div>
+      <details class="legal-details">
+        <summary>Datos del vendedor</summary>
+        <div class="legal-datos">
+          <div class="legal-title">Información fiscal del vendedor</div>
+          ${datos}
+        </div>
+      </details>
       <nav class="legal-links">
         <a href="terminos-y-condiciones.html">Términos y Condiciones</a>
         <a href="politica-de-privacidad.html">Política de Privacidad</a>
