@@ -185,6 +185,8 @@ header{
 .sheet-price{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--clay-dk);margin:8px 0 14px;}
 .sheet-desc{color:var(--soft);font-size:16px;line-height:1.6;margin-bottom:18px;}
 .iva-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--sage);background:rgba(111,127,90,.1);border-radius:50px;padding:4px 12px;margin:-6px 0 14px;}
+.unica-tag{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#a9863f;}
+.card-body .unica-tag{display:block;margin:2px 0 4px;}
 .prod-legal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:14px;line-height:1.55;color:var(--soft);}
 .prod-legal>div{margin-bottom:7px;}
 .prod-legal>div:last-child{margin-bottom:0;}
@@ -331,6 +333,9 @@ let selectedShip = 0;    // opción de envío elegida en el checkout
 try { cart = JSON.parse(localStorage.getItem("cart")||"{}"); } catch(e){ cart = {}; }
 
 const money = n => CONFIG.moneda + " " + Number(n).toLocaleString("es-AR");
+const hasPrice   = p => typeof p.precio === "number" && p.precio > 0;
+const priceLabel = p => hasPrice(p) ? money(p.precio) : "Consultar";
+const soldOut    = p => !!(p.vendida || p.agotado);
 const byId  = id => PRODUCTOS.find(p => p.id == id);
 const catName = id => (CATEGORIAS.find(c=>c.id===id)||{}).nombre || "";
 const catEmoji = id => (CATEGORIAS.find(c=>c.id===id)||{}).emoji || "✨";
@@ -389,18 +394,21 @@ function renderGrid(){
   el.innerHTML = list.map(p => {
     const img = p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nombre)}" loading="lazy">` : `<div class="ph">${placeholder(p)}</div>`;
     let badge = "";
-    if(p.agotado) badge = `<span class="badge out">Agotado</span>`;
+    if(soldOut(p)) badge = `<span class="badge out">Vendida</span>`;
     else if(p.destacado) badge = `<span class="badge">Destacado</span>`;
-    const addBtn = p.agotado
-      ? `<div class="add disabled">Sin stock</div>`
-      : `<button class="add" onclick="event.stopPropagation();addToCart(${p.id})">＋ Agregar</button>`;
+    let addBtn;
+    if(soldOut(p))        addBtn = `<div class="add disabled">Vendida</div>`;
+    else if(!hasPrice(p)) addBtn = `<button class="add" onclick="event.stopPropagation();consultar(${p.id})">💬 Consultar</button>`;
+    else                  addBtn = `<button class="add" onclick="event.stopPropagation();addToCart(${p.id})">＋ Agregar</button>`;
+    const unicaTag = p.unica ? `<div class="unica-tag">Pieza única · 1 de 1</div>` : "";
     return `
       <article class="card" onclick="openProduct(${p.id})">
         <div class="thumb">${img}${badge}</div>
         <div class="card-body">
           <div class="card-cat">${catName(p.categoria)}</div>
           <div class="card-name">${escapeHtml(p.nombre)}</div>
-          <div class="card-price">${money(p.precio)}</div>
+          ${unicaTag}
+          <div class="card-price">${priceLabel(p)}</div>
           ${addBtn}
         </div>
       </article>`;
@@ -411,19 +419,22 @@ function renderGrid(){
 function openProduct(id){
   const p = byId(id); if(!p) return;
   const img = p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nombre)}">` : placeholder(p);
-  let badge = p.agotado ? `<span class="badge out" style="position:static;display:inline-block;margin-bottom:8px;">Agotado</span>`
+  let badge = soldOut(p) ? `<span class="badge out" style="position:static;display:inline-block;margin-bottom:8px;">Vendida</span>`
             : p.destacado ? `<span class="badge" style="position:static;display:inline-block;margin-bottom:8px;">Destacado</span>` : "";
-  const addBtn = p.agotado
-    ? `<div class="btn btn-ghost" style="opacity:.6;">Sin stock por ahora</div>`
-    : `<button class="btn btn-primary" onclick="addToCart(${p.id});closeAll();openCart();">🛒 Agregar al carrito</button>`;
+  let addBtn;
+  if(soldOut(p))        addBtn = `<div class="btn btn-ghost" style="opacity:.6;">Pieza vendida</div>`;
+  else if(!hasPrice(p)) addBtn = `<button class="btn btn-primary" onclick="consultar(${p.id})">💬 Consultar precio por WhatsApp</button>`;
+  else                  addBtn = `<button class="btn btn-primary" onclick="addToCart(${p.id});closeAll();openCart();">🛒 Agregar al carrito</button>`;
+  const unicaTag = p.unica ? `<span class="unica-tag" style="display:inline-block;margin-bottom:6px;">Pieza única · 1 de 1 · Raku</span>` : "";
   document.getElementById("prodSheet").innerHTML = `
     <div class="sheet-img">${img}<button class="x sheet-x" onclick="closeAll()" aria-label="Cerrar">✕</button></div>
     <div class="sheet-body">
       <div class="card-cat">${catName(p.categoria)}</div>
       <h2>${escapeHtml(p.nombre)}</h2>
+      ${unicaTag}
       ${badge}
-      <div class="sheet-price">${money(p.precio)}</div>
-      <div class="iva-tag">Precio final</div>
+      <div class="sheet-price">${priceLabel(p)}</div>
+      ${hasPrice(p) ? `<div class="iva-tag">Precio final</div>` : ""}
       <p class="sheet-desc">${escapeHtml(p.descripcion||"")}</p>
       <div class="prod-legal">
         <div>📦 <b>Entrega estimada:</b> ${escapeHtml(legalInfo("plazoEntrega"))}</div>
@@ -438,14 +449,23 @@ function openProduct(id){
 
 /* ============================ CARRITO ============================ */
 function addToCart(id){
-  const p = byId(id); if(!p || p.agotado) return;
+  const p = byId(id); if(!p || soldOut(p) || !hasPrice(p)) return;
+  if(p.unica && (cart[id]||0) >= 1){ toast("Es una pieza única (1 de 1) 🌿"); return; }
   cart[id] = (cart[id]||0) + 1;
   saveCart(); updateCartCount(); toast(`✓ ${p.nombre} agregado`);
 }
 function changeQty(id, delta){
+  const p = byId(id);
+  if(delta > 0 && p && p.unica && (cart[id]||0) >= 1){ toast("Es una pieza única (1 de 1) 🌿"); return; }
   cart[id] = (cart[id]||0) + delta;
   if(cart[id] <= 0) delete cart[id];
   saveCart(); updateCartCount(); renderCart();
+}
+/* Consultar por WhatsApp una pieza sin precio publicado */
+function consultar(id){
+  const p = byId(id); if(!p) return;
+  const txt = `¡Hola! Me interesa la pieza *${p.nombre}*. ¿Me podrías pasar el precio y si está disponible? ¡Gracias!`;
+  window.open(waLink(txt), "_blank");
 }
 function removeItem(id){ delete cart[id]; saveCart(); updateCartCount(); renderCart(); }
 function saveCart(){ localStorage.setItem("cart", JSON.stringify(cart)); }
