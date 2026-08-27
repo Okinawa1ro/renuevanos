@@ -118,7 +118,7 @@ const PRODUCTOS = [
     categoria: "ceramica",
     precio: 80000,
     descripcion: "Ánfora de cuerpo amplio en turquesa menta, con moteado de ceniza y fino craquelé, como una reliquia rescatada del agua y el tiempo. Cerámica raku. Medidas: 18 alto × 13 ancho cm.",
-    foto: "",
+    foto: "fotos/prod-anfora.jpg",
     unica: true,
     disponible: false,
     vendida: false
@@ -140,7 +140,7 @@ const PRODUCTOS = [
     categoria: "ceramica",
     precio: 150000,
     descripcion: "Batea alargada mediana de raku transparente, con la textura y las grietas naturales del fuego. Serena y luminosa. Medidas: 44 × 21 × 9 cm.",
-    foto: "",
+    foto: "fotos/prod-batea-palma.jpg",
     unica: true,
     disponible: true,
     vendida: false
@@ -239,7 +239,7 @@ const PRODUCTOS = [
     categoria: "ceramica",
     precio: 70000,
     descripcion: "Vaso escultural tipo florero en verde óxido, con degradado de humo e irisaciones metálicas. Carácter mineral. Medidas: 24 alto × 13 diámetro cm.",
-    foto: "",
+    foto: "fotos/prod-recipiente-moab.jpg",
     unica: true,
     disponible: true,
     vendida: false
@@ -250,7 +250,7 @@ const PRODUCTOS = [
     categoria: "ceramica",
     precio: 70000,
     descripcion: "Vaso tipo florero en raku transparente, blanco marfil recorrido por finas grietas negras, como un mapa antiguo. Medidas: 24 alto × 13 diámetro cm.",
-    foto: "",
+    foto: "fotos/prod-recipiente-salem.jpg",
     unica: true,
     disponible: true,
     vendida: false
