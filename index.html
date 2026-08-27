@@ -336,6 +336,7 @@ const money = n => CONFIG.moneda + " " + Number(n).toLocaleString("es-AR");
 const hasPrice   = p => typeof p.precio === "number" && p.precio > 0;
 const priceLabel = p => hasPrice(p) ? money(p.precio) : "Consultar";
 const soldOut    = p => !!(p.vendida || p.agotado);
+const unavailable= p => p.disponible === false;
 const byId  = id => PRODUCTOS.find(p => p.id == id);
 const catName = id => (CATEGORIAS.find(c=>c.id===id)||{}).nombre || "";
 const catEmoji = id => (CATEGORIAS.find(c=>c.id===id)||{}).emoji || "✨";
@@ -395,11 +396,13 @@ function renderGrid(){
     const img = p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nombre)}" loading="lazy">` : `<div class="ph">${placeholder(p)}</div>`;
     let badge = "";
     if(soldOut(p)) badge = `<span class="badge out">Vendida</span>`;
+    else if(unavailable(p)) badge = `<span class="badge out">No disponible</span>`;
     else if(p.destacado) badge = `<span class="badge">Destacado</span>`;
     let addBtn;
-    if(soldOut(p))        addBtn = `<div class="add disabled">Vendida</div>`;
-    else if(!hasPrice(p)) addBtn = `<button class="add" onclick="event.stopPropagation();consultar(${p.id})">💬 Consultar</button>`;
-    else                  addBtn = `<button class="add" onclick="event.stopPropagation();addToCart(${p.id})">＋ Agregar</button>`;
+    if(soldOut(p))          addBtn = `<div class="add disabled">Vendida</div>`;
+    else if(unavailable(p)) addBtn = `<div class="add disabled">No disponible</div>`;
+    else if(!hasPrice(p))   addBtn = `<button class="add" onclick="event.stopPropagation();consultar(${p.id})">💬 Consultar</button>`;
+    else                    addBtn = `<button class="add" onclick="event.stopPropagation();addToCart(${p.id})">＋ Agregar</button>`;
     const unicaTag = p.unica ? `<div class="unica-tag">Pieza única · 1 de 1</div>` : "";
     return `
       <article class="card" onclick="openProduct(${p.id})">
@@ -420,11 +423,13 @@ function openProduct(id){
   const p = byId(id); if(!p) return;
   const img = p.foto ? `<img src="${p.foto}" alt="${escapeHtml(p.nombre)}">` : placeholder(p);
   let badge = soldOut(p) ? `<span class="badge out" style="position:static;display:inline-block;margin-bottom:8px;">Vendida</span>`
+            : unavailable(p) ? `<span class="badge out" style="position:static;display:inline-block;margin-bottom:8px;">No disponible</span>`
             : p.destacado ? `<span class="badge" style="position:static;display:inline-block;margin-bottom:8px;">Destacado</span>` : "";
   let addBtn;
-  if(soldOut(p))        addBtn = `<div class="btn btn-ghost" style="opacity:.6;">Pieza vendida</div>`;
-  else if(!hasPrice(p)) addBtn = `<button class="btn btn-primary" onclick="consultar(${p.id})">💬 Consultar precio por WhatsApp</button>`;
-  else                  addBtn = `<button class="btn btn-primary" onclick="addToCart(${p.id});closeAll();openCart();">🛒 Agregar al carrito</button>`;
+  if(soldOut(p))          addBtn = `<div class="btn btn-ghost" style="opacity:.6;">Pieza vendida</div>`;
+  else if(unavailable(p)) addBtn = `<div class="btn btn-ghost" style="opacity:.6;">No disponible por ahora</div>`;
+  else if(!hasPrice(p))   addBtn = `<button class="btn btn-primary" onclick="consultar(${p.id})">💬 Consultar precio por WhatsApp</button>`;
+  else                    addBtn = `<button class="btn btn-primary" onclick="addToCart(${p.id});closeAll();openCart();">🛒 Agregar al carrito</button>`;
   const unicaTag = p.unica ? `<span class="unica-tag" style="display:inline-block;margin-bottom:6px;">Pieza única · 1 de 1 · Raku</span>` : "";
   document.getElementById("prodSheet").innerHTML = `
     <div class="sheet-img">${img}<button class="x sheet-x" onclick="closeAll()" aria-label="Cerrar">✕</button></div>
@@ -449,7 +454,7 @@ function openProduct(id){
 
 /* ============================ CARRITO ============================ */
 function addToCart(id){
-  const p = byId(id); if(!p || soldOut(p) || !hasPrice(p)) return;
+  const p = byId(id); if(!p || soldOut(p) || unavailable(p) || !hasPrice(p)) return;
   if(p.unica && (cart[id]||0) >= 1){ toast("Es una pieza única (1 de 1) 🌿"); return; }
   cart[id] = (cart[id]||0) + 1;
   saveCart(); updateCartCount(); toast(`✓ ${p.nombre} agregado`);
