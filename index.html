@@ -493,6 +493,9 @@ function openProduct(id){
   else if(unavailable(p)) addBtn = `<div class="btn btn-ghost" style="opacity:.6;">No disponible por ahora</div>`;
   else if(!hasPrice(p))   addBtn = `<button class="btn btn-primary" onclick="consultar(${p.id})">💬 Consultar precio por WhatsApp</button>`;
   else                    addBtn = `<button class="btn btn-primary" onclick="addToCart(${p.id});closeAll();openCart();">🛒 Agregar al carrito</button>`;
+  const consultBtn = (soldOut(p) || unavailable(p))
+    ? `<button class="btn btn-ghost" style="margin-top:10px;" onclick="consultarStock(${p.id})">💬 Consultar pieza a pedido</button>`
+    : `<button class="btn btn-ghost" style="margin-top:10px;" onclick="consultarStock(${p.id})">💬 Consultar disponibilidad</button>`;
   const unicaTag = p.unica ? `<span class="unica-tag" style="display:inline-block;margin-bottom:6px;">Pieza única · 1 de 1 · Raku</span>` : "";
   document.getElementById("prodSheet").innerHTML = `
     <div class="sheet-img">${img}<button class="x sheet-x" onclick="closeAll()" aria-label="Cerrar">✕</button></div>
@@ -513,6 +516,7 @@ function openProduct(id){
         </div>
       </details>
       ${addBtn}
+      ${consultBtn}
     </div>`;
   document.getElementById("overlay").classList.add("show");
   document.getElementById("prodModal").classList.add("show");
@@ -536,6 +540,14 @@ function changeQty(id, delta){
 function consultar(id){
   const p = byId(id); if(!p) return;
   const txt = `¡Hola! Me interesa la pieza *${p.nombre}*. ¿Me podrías pasar el precio y si está disponible? ¡Gracias!`;
+  window.open(waLink(txt), "_blank");
+}
+/* Consultar por disponibilidad/stock (o pieza a pedido si ya no está) */
+function consultarStock(id){
+  const p = byId(id); if(!p) return;
+  const txt = (soldOut(p) || unavailable(p))
+    ? `¡Hola! Vi la pieza *${p.nombre}* en la tienda. ¿Podrías hacer una similar a pedido? ¡Gracias!`
+    : `¡Hola! Quería consultar por la pieza *${p.nombre}*. ¿Sigue disponible? ¡Gracias!`;
   window.open(waLink(txt), "_blank");
 }
 function removeItem(id){ delete cart[id]; saveCart(); updateCartCount(); renderCart(); }
