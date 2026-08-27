@@ -196,6 +196,12 @@ header{
 .prod-legal>div:last-child{margin-bottom:0;}
 .prod-legal b{color:var(--ink);font-weight:700;}
 .prod-legal a{color:var(--clay-dk);font-weight:700;}
+.prod-legal-wrap{margin-bottom:20px;}
+.prod-legal-wrap>summary{cursor:pointer;list-style:none;font-size:13px;color:var(--soft);display:inline-flex;align-items:center;gap:6px;padding:4px 0;user-select:none;text-decoration:underline;text-underline-offset:3px;}
+.prod-legal-wrap>summary::-webkit-details-marker{display:none;}
+.prod-legal-wrap>summary::before{content:'ℹ️';text-decoration:none;}
+.prod-legal-wrap[open]>summary{margin-bottom:10px;}
+.prod-legal-wrap .prod-legal{margin-bottom:0;}
 /* Confirmación de compra */
 .confirm{text-align:center;padding:6px 0 4px;}
 .confirm-ic{width:64px;height:64px;border-radius:50%;background:var(--ok);color:#fff;font-size:36px;display:flex;align-items:center;justify-content:center;margin:6px auto 14px;}
@@ -498,11 +504,14 @@ function openProduct(id){
       <div class="sheet-price">${priceLabel(p)}</div>
       ${hasPrice(p) ? `<div class="iva-tag">Precio final</div>` : ""}
       <p class="sheet-desc">${escapeHtml(p.descripcion||"")}</p>
-      <div class="prod-legal">
-        <div>📦 <b>Entrega estimada:</b> ${escapeHtml(legalInfo("plazoEntrega"))}</div>
-        <div>🔄 <b>Devoluciones:</b> tenés 10 días corridos desde que la recibís para arrepentirte, sin dar explicaciones. <a href="terminos-y-condiciones.html" target="_blank">Ver Términos</a></div>
-        <div>✅ <b>Garantía legal:</b> ${escapeHtml(String(legalInfo("garantiaMeses")))} meses por defectos ocultos o de origen. Las características artesanales (craquelé, variaciones de color, textura y forma) no se consideran defectos. <a href="terminos-y-condiciones.html" target="_blank">Ver Términos</a></div>
-      </div>
+      <details class="prod-legal-wrap">
+        <summary>Envío, devoluciones y garantía</summary>
+        <div class="prod-legal">
+          <div>📦 <b>Entrega estimada:</b> ${escapeHtml(legalInfo("plazoEntrega"))}</div>
+          <div>🔄 <b>Devoluciones:</b> tenés 10 días corridos desde que la recibís para arrepentirte, sin dar explicaciones. <a href="terminos-y-condiciones.html" target="_blank">Ver Términos</a></div>
+          <div>✅ <b>Garantía legal:</b> ${escapeHtml(String(legalInfo("garantiaMeses")))} meses por defectos ocultos o de origen. Las características artesanales (craquelé, variaciones de color, textura y forma) no se consideran defectos. <a href="terminos-y-condiciones.html" target="_blank">Ver Términos</a></div>
+        </div>
+      </details>
       ${addBtn}
     </div>`;
   document.getElementById("overlay").classList.add("show");
