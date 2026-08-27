@@ -33,7 +33,7 @@ body{
   font-family:'Nunito',system-ui,sans-serif;font-size:17px;line-height:1.5;
   overflow-x:hidden;-webkit-text-size-adjust:100%;
 }
-img{max-width:100%;display:block;}
+img{max-width:100%;display:block;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .serif{font-family:'Cormorant Garamond',Georgia,serif;}
 
@@ -337,6 +337,12 @@ const hasPrice   = p => typeof p.precio === "number" && p.precio > 0;
 const priceLabel = p => hasPrice(p) ? money(p.precio) : "Consultar";
 const soldOut    = p => !!(p.vendida || p.agotado);
 const unavailable= p => p.disponible === false;
+
+/* Disuasivo suave contra copia de imágenes (bloquea clic derecho y arrastre
+   sobre las fotos). No es infalible —nada en la web lo es— pero desalienta
+   la copia casual. La protección real de fondo es la marca de agua. */
+document.addEventListener("contextmenu", e => { if(e.target && e.target.tagName === "IMG") e.preventDefault(); });
+document.addEventListener("dragstart",  e => { if(e.target && e.target.tagName === "IMG") e.preventDefault(); });
 const byId  = id => PRODUCTOS.find(p => p.id == id);
 const catName = id => (CATEGORIAS.find(c=>c.id===id)||{}).nombre || "";
 const catEmoji = id => (CATEGORIAS.find(c=>c.id===id)||{}).emoji || "✨";
