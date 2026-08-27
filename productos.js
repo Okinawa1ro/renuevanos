@@ -59,8 +59,8 @@ const CONFIG = {
   legal: {
     titular:      "María Regina Petazzi",   // Nombre y apellido de la titular
     cuit:         "27-18284811-0",   // CUIT / CUIL de la titular
-    domicilio:    "Corredor Bancalari 3901, Troncos del Talar",   // domicilio legal
-    localidad:    "Provincia de Buenos Aires",
+    domicilio:    "Uruguay 2602, Beccar",   // domicilio legal
+    localidad:    "CP 1643, Provincia de Buenos Aires",
     email:        "info.renuevanos@gmail.com",   // email de contacto
     // Plazo de entrega estimado (se muestra en cada producto y en T&C).
     plazoEntrega: "Entre 3 y 10 días hábiles según la zona de envío.",
