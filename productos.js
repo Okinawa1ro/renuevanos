@@ -411,10 +411,10 @@ const PRODUCTOS = [
   },
   {
     id: 28,
-    nombre: "Mará, Santuario Vivo",
+    nombre: "María, Santuario Vivo",
     categoria: "religioso",
     precio: 150000,
-    descripcion: "Imagen «Mará, Santuario Vivo» en raku transparente, modelada a mano, de presencia serena y sagrada. Medidas: 30 cm de alto.",
+    descripcion: "Imagen «María, Santuario Vivo» en raku transparente, modelada a mano, de presencia serena y sagrada. Medidas: 30 cm de alto.",
     foto: "fotos/prod-mara-santuario-vivo.jpg",
     unica: true,
     disponible: true,
