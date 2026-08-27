@@ -47,7 +47,7 @@
     const s=document.createElement("style");
     s.id="pie-legal-style";
     s.textContent = ""
-      + ".legal-details{margin:0 auto 12px;max-width:560px;}"
+      + ".legal-details{margin:0 auto 12px;max-width:560px;text-align:center;}"
       + ".legal-details>summary{cursor:pointer;font-size:13px;opacity:.7;list-style:none;display:inline-flex;"
       + "align-items:center;gap:6px;padding:6px 14px;border:1px solid currentColor;border-radius:50px;transition:opacity .15s;}"
       + ".legal-details>summary:hover{opacity:.95;}"
